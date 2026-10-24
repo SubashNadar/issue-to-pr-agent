@@ -13,6 +13,26 @@ The MVP is the scope in [PITCH.md](PITCH.md). This plan says how to build it, in
 - Forks are allowed.
 - Licence: MIT.
 
+## Roadmap
+
+```mermaid
+gantt
+  title Issue-to-PR roadmap (full-time assumption; adjust to available hours)
+  dateFormat YYYY-MM-DD
+  section Build
+  Phase 0 Set up                        :p0, 2026-11-02, 7d
+  Phase 1 Trust layer and intake        :p1, after p0, 14d
+  Phase 2 Fix loop                      :p2, after p1, 14d
+  Phase 3 Summary and memory            :p3, after p2, 7d
+  Phase 4 Setup, verification, demo     :p4, after p3, 7d
+  section Gates
+  Trust tests pass                      :milestone, m1, after p1, 0d
+  Ten seeded bugs produce draft PRs     :milestone, m2, after p2, 0d
+  Demo rehearsal passes                 :milestone, m3, after p4, 0d
+```
+
+The chart assumes full-time work for seven weeks. If the available hours are fewer, the dates move out in proportion, and the cut list applies sooner.
+
 ## Phases
 
 ### Phase 0: Set up (week 1)
@@ -57,7 +77,7 @@ The MVP is the scope in [PITCH.md](PITCH.md). This plan says how to build it, in
 ### Phase 4: Setup, evaluation, and demo (week 7)
 
 - Self-hosting guide: deploy with Docker Compose, set the allow-list, set keys, connect GitHub and Gmail.
-- Evaluation run, following [EVALUATION.md](EVALUATION.md).
+- Evaluation run, following [VERIFICATION.md](VERIFICATION.md).
 - Three-minute demo, and a short written report that includes the targets not met.
 
 **Exit:** a new user can set up a fork from the guide in under 30 minutes, and the evaluation report is published.

@@ -61,6 +61,22 @@ Trust is an allow-list, not a judgement about the person.
 - Emails to people outside the team without approval
 - Central hosting of users' keys or repositories
 
+## Roadmap
+
+```mermaid
+gantt
+  title Issue-to-PR roadmap (full-time assumption; adjust to available hours)
+  dateFormat YYYY-MM-DD
+  section Build
+  Set up                                :p0, 2026-11-02, 7d
+  Trust layer and intake                :p1, after p0, 14d
+  Fix loop                              :p2, after p1, 14d
+  Summary and memory                    :p3, after p2, 7d
+  Setup, verification, demo             :p4, after p3, 7d
+```
+
+The full phase detail is in [PLAN.md](PLAN.md). The use cases and their diagrams are in [USE-CASES.md](USE-CASES.md).
+
 ## Main risks
 
 | Risk | Response |

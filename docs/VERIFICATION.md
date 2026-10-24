@@ -1,4 +1,4 @@
-# Evaluation
+# Verification
 
 **Audience:** engineers and reviewers. **Status:** targets are starting points; the week-1 baseline replaces them with measured values.
 
@@ -10,6 +10,19 @@
 - Measure reliability with pass^k: the share of tasks that succeed on all k repeated runs.
 - Report failures in the same place as successes.
 - Set cost and latency targets from the measured baseline, not in advance.
+
+## Test layers
+
+| Layer | What is tested | Pass condition |
+|---|---|---|
+| Unit | Trust decisions, label checks, branch rules, citation checks | Every planted case gives the expected result |
+| Graph | Node order, routing, checkpoints, approval pauses | Each path ends in the expected state; resume gives the same result |
+| Contract | Agent cards, MCP tool schemas, the approval token format | Invalid inputs are rejected with a clear error |
+| Sandbox | Test runs with no network and no secrets | Network attempts fail and are logged; secrets are absent |
+| Retrieval | Recall on the seeded-bug query set | Targets in the search measures met |
+| End to end | Full fix loop on seeded bugs and test mailboxes | Expected outcome for each seeded bug |
+| Security | Forged senders, injected instructions, unauthorised writes | Every case refused or ignored as specified |
+| Observability | Every run has a complete trace; no personal data in traces or logs | Trace present for every run; scan finds nothing |
 
 ## Datasets
 
