@@ -1,6 +1,6 @@
 # Architecture
 
-**Audience:** architecture review. **Status:** design, version 1.
+**Audience:** architecture review. **Status:** version 1. Phase 1 (trust layer and GitHub webhook) is built and tested. Phase 1 scope is Gmail intake and GitHub only; Jira, Zoho, and other providers are marked future.
 
 Contents:
 1. [Goals and non-goals](#goals-and-non-goals)
@@ -23,8 +23,8 @@ Contents:
 
 **Goals**
 - Turn a trusted bug report into a reviewed draft fix, with evidence.
-- Support GitHub first, with GitLab and Bitbucket behind the same adapter interface.
-- Accept reports from email and Jira, with an allow-list on every channel.
+- Support GitHub in phase 1. GitLab, Bitbucket, AWS CodeCommit, and Azure DevOps follow behind the same adapter interface (future).
+- Accept reports from Gmail in phase 1, with an allow-list on every channel. Jira and Zoho intake are future work.
 - Keep every write behind a human decision.
 - Let a new user self-host with their own keys.
 
@@ -138,7 +138,7 @@ flowchart TB
 | Tools | MCP | Servers: provider, docs search, sandbox. Write tools need an approval token |
 | Sandbox results | gRPC server streaming | Logs and progress stream to the orchestrator |
 | Email | Gmail API (read), Gmail API or SMTP (send) | Read uses labels; sending is rate-limited |
-| Jira | Jira webhooks (in), REST API (out) | Comments only; no status changes in version 1 |
+| Jira (future) | Jira webhooks (in), REST API (out) | Comments only; no status changes. Not in phase 1 |
 
 ### Example Agent Card (Classifier)
 
@@ -207,7 +207,9 @@ flowchart TD
 ```
 
 Notes:
-- Email identity is never taken from the From header alone.
+- Email identity is never taken from the From header alone. Implemented in `src/issue_to_pr/email_auth.py`.
+- Unauthenticated email is dropped with no reply, so a forged address never receives a message from the system.
+- Phase 1 supports Gmail and GitHub. The Jira branch above is future work.
 - The generic reply is rate-limited to one per sender per day. Automated senders such as bounce handlers, no-reply addresses, and mailing lists get no reply.
 - A repository issue from a non-allow-listed author stays open and is ignored by the agent. No reply is posted.
 - Every decision is written to the audit log with the channel, sender, outcome, and time.
@@ -532,12 +534,15 @@ Keys are held in the OS secret store on the user's machine and in the user's ser
 | 4 | Retrieval | Plain vector store; LlamaIndex | LlamaIndex | Metadata filtering and citations built in | Accepted |
 | 5 | Memory | Mem0; Graphiti | Mem0 for v1 | Simpler to run; move to Graphiti if time-based queries matter | Proposed, measure in week 1 |
 | 6 | Code graph | None; Graphify | Graphify | Structural answers the vector index can't give | Accepted, verify incremental updates |
-| 7 | Intake tooling | Built-in connectors; custom components; Composio | Custom components | No confirmed built-in Gmail or Jira component; most control | Accepted |
+| 7 | Intake tooling | Built-in connectors; custom components; Composio | Custom components | No confirmed built-in Gmail component; most control. Gmail first; Jira and Zoho later | Accepted |
 | 8 | Trust | Judge the request; allow-list | Allow-list | Predictable and auditable | Accepted |
 | 9 | Write access | Direct writes; approval queue | Approval queue | Human decides every write | Accepted |
-| 10 | Model provider | External only; self-hosted only; both | Configurable, both supported | Lets organisations keep code internal | Open, needs sign-off |
+| 10 | Model provider | External only; self-hosted only; both | Users bring their own keys; provider configurable | No cost constraint in this phase; keys stay with the user | Accepted for phase 1; data-handling note still needed |
 | 11 | Licence | MIT; Apache 2.0 | MIT | Simplest for adoption | Proposed |
-| 12 | Gitlab and Bitbucket timing | Now; after GitHub | After GitHub | Keeps version 1 deliverable | Accepted |
+| 12 | Repository providers | GitHub now; GitLab, Bitbucket, AWS CodeCommit, Azure DevOps later | GitHub only in phase 1 | Keeps phase 1 deliverable; adapter interface keeps the rest open | Accepted |
+| 13 | Intake channels | Gmail; Jira; Zoho | Gmail in phase 1 | Single channel to verify end to end first | Accepted |
+| 14 | Unauthenticated email | Generic reply; drop silently | Drop with no reply | A reply to a forged address would make the system a spam source | Accepted, implemented |
+| 15 | Forks | Closed; open | Allowed | Users run their own deployment with their own keys | Accepted |
 
 ## Open questions
 

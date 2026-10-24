@@ -1,0 +1,12 @@
+{
+  "_comment": "Copy to config/allowlist.json and edit. Real entries are gitignored. Use lower or upper case; matching is case-insensitive.",
+  "email": [
+    "reporter@example.com"
+  ],
+  "github_authors": [
+    "example-reporter"
+  ],
+  "github_maintainers": [
+    "example-maintainer"
+  ]
+}

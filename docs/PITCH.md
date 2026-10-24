@@ -24,9 +24,9 @@ flowchart LR
 
 Trust is set by an allow-list per project, not by who can see the repository.
 
-- **Email:** allow-listed addresses, verified with the sender's authentication results. Anyone else gets one generic reply per day: "You are not permitted to raise issues through this channel."
-- **Repository issues (GitHub, GitLab, Bitbucket):** only allow-listed accounts start the agent. Other people can still file issues, but the agent ignores them.
-- **Jira:** allow-listed account IDs.
+- **Email (phase 1):** allow-listed addresses, verified with the sender's authentication results. Unauthenticated mail is dropped with no reply. An authenticated sender who is not allow-listed gets one generic reply per day: "You are not permitted to raise issues through this channel."
+- **GitHub issues (phase 1):** only allow-listed authors start the agent, and a listed maintainer must add the label. Other people can still file issues, but the agent ignores them.
+- **Jira and Zoho (future):** the same allow-list model, applied to their account IDs.
 
 A maintainer must also add the `agent-fix` label before any work starts.
 
@@ -41,18 +41,20 @@ A maintainer must also add the `agent-fix` label before any work starts.
 
 In:
 - One reference repository the team controls
-- GitHub webhooks first
-- Gmail or Jira intake, one of the two
+- GitHub as the repository provider
+- Gmail as the intake channel
 - Allow-list on every channel
 - Draft PRs only, with a human merge
 - Root-cause summary to the source
-- Self-hosting guide and extension setup
+- Self-hosting guide, with users bringing their own API keys
+- Forks allowed
 
-Out:
+Out (future):
+- Jira and Zoho intake
+- GitLab, Bitbucket, AWS CodeCommit, and Azure DevOps providers
 - Automatic merge, close, or label changes
 - Email to people outside the team without approval
 - Central hosting of users' keys or repositories
-- GitLab and Bitbucket adapters until the GitHub path works (listed as stretch)
 
 ## Main risks
 
@@ -74,7 +76,7 @@ Full analysis: [ARCHITECTURE.md](ARCHITECTURE.md#security-and-threat-model).
 |---|---|
 | 1 | Reference repository chosen; code graph built; memory schema agreed |
 | 2–3 | GitHub path: allow-listed issue to draft PR on seeded bugs |
-| 4 | Email or Jira intake with allow-list and generic reply |
+| 4 | Gmail intake with allow-list and generic reply |
 | 5 | Root-cause write-back with approval |
 | 6 | Extension setup flow and self-hosting guide |
 | 7 | Evaluation, demo, and a short write-up |
@@ -84,7 +86,7 @@ Seven weeks is tight for this scope. The roadmap lists what gets cut first if th
 ## Decisions needed
 
 1. Approve the reference repository. Criteria: a repository the team controls, a test suite under ten minutes, and clear contribution rules.
-2. Choose the intake channel for version 1: Gmail or Jira.
+2. Confirm the phase 1 scope: Gmail intake and GitHub only. Decided; Jira, Zoho, and the other providers are future work.
 3. Approve the model-provider policy: whether source code may be sent to an external LLM provider, or a self-hosted model is required.
 4. Confirm that the first ten replies to reporters need approval.
 5. Confirm the licence (proposed: MIT) and whether the extension is published on the VS Code Marketplace.
