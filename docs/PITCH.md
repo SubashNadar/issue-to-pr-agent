@@ -1,59 +1,64 @@
 # Pitch: Issue-to-PR Agent
 
-**Audience:** mentor and stakeholders. **Reading time:** five minutes.
+**Audience:** mentor and stakeholders. **Reading time:** five minutes. **Status:** proposal; nothing is built yet.
 
 ## The problem
 
-Bug reports arrive by email, Jira, and repository issues. Someone reads each report, finds the code, writes a fix, opens a pull request, and later explains the root cause to the reporter. The steps are repeated for every bug, and the reasoning behind the fix is rarely recorded.
+Bug reports arrive by email and repository issues. Someone reads each report, finds the code, writes a fix, opens a pull request, and later explains the root cause to the reporter. The steps repeat for every bug, and the reasoning behind a fix is rarely recorded.
 
 ## The proposal
 
-An agent that turns a trusted bug report into a reviewed draft fix and explains the root cause when it is done.
+An agent that turns a trusted bug report into a reviewed draft fix, and then tells the reporter what went wrong and why.
 
 ```mermaid
 flowchart LR
-  A[Trusted report] --> B[Agent finds code<br/>memory and code graph]
-  B --> C[Reproduces bug<br/>in sandbox]
-  C --> D[Patches on branch<br/>runs tests]
-  D --> E[Draft PR or MR]
+  A[Trusted report<br/>by Gmail] --> B[Agent finds code<br/>memory and code graph]
+  B --> C[Reproduces bug<br/>with a failing test]
+  C --> D[Patches on a branch<br/>runs tests]
+  D --> E[Draft PR<br/>on GitHub]
   E --> F[Maintainer reviews<br/>and merges]
-  F --> G[Root-cause summary<br/>back to reporter]
+  F --> G[Root-cause summary<br/>to reporter]
 ```
+
+A step-by-step example is in [WALKTHROUGH.md](WALKTHROUGH.md).
 
 ## Who can start it
 
-Trust is set by an allow-list per project, not by who can see the repository.
+Trust is an allow-list, not a judgement about the person.
 
-- **Email (phase 1):** allow-listed addresses, verified with the sender's authentication results. Unauthenticated mail is dropped with no reply. An authenticated sender who is not allow-listed gets one generic reply per day: "You are not permitted to raise issues through this channel."
-- **GitHub issues (phase 1):** only allow-listed authors start the agent, and a listed maintainer must add the label. Other people can still file issues, but the agent ignores them.
-- **Jira and Zoho (future):** the same allow-list model, applied to their account IDs.
-
-A maintainer must also add the `agent-fix` label before any work starts.
+- **Email:** only allow-listed addresses. The mail must pass SPF and DKIM checks for the sender's domain. Unauthenticated mail is dropped with no reply. An authenticated stranger gets one generic reply per day: "You are not permitted to raise issues through this channel."
+- **GitHub issues:** only allow-listed authors can start the agent, and a listed maintainer must add the `agent-fix` label. Anyone else can still file an issue; the agent ignores it.
 
 ## Why it's worth building
 
-- **Measurable.** Each stage has a metric: time to draft, acceptance rate, root-cause accuracy, and memory hit rate.
-- **Improves with use.** Memory of past fixes means a second fix in the same module should be faster. This is measurable.
+- **Measurable.** Each stage has a number: time to draft, acceptance rate, root-cause accuracy, and memory hit rate.
+- **Improves with use.** Memory of past fixes should make the next fix in the same module faster. This is testable.
 - **Current standards.** It uses MCP for tools, A2A between agents, and gRPC for the sandbox.
-- **Open source with a setup tool.** Users run it with their own keys, and a VS Code extension guides the setup.
+- **Open source with your own keys.** Anyone can fork it and run it with their own Azure OpenAI deployment and their own GitHub App.
 
-## Scope for version 1
+## MVP scope
 
-In:
-- One reference repository the team controls
-- GitHub as the repository provider
+**In the MVP**
+- One reference repository, on GitHub
 - Gmail as the intake channel
-- Allow-list on every channel
+- Allow-list on every intake path
+- Azure OpenAI as the model, using the user's own key and deployment
+- Bug reports only
+- Reproduction with a failing test in a sandbox
+- Patches on an `agent/*` branch, with a two-attempt limit
 - Draft PRs only, with a human merge
-- Root-cause summary to the source
-- Self-hosting guide, with users bringing their own API keys
-- Forks allowed
+- Root-cause summary with citations, approved by a maintainer before it's sent
+- Memory written on merge
+- Audit log of every decision
+- Self-hosting guide, so forks can run with their own keys
+- Evaluation report
 
-Out (future):
-- Jira and Zoho intake
-- GitLab, Bitbucket, AWS CodeCommit, and Azure DevOps providers
+**Not in the MVP**
+- Jira, Zoho, GitLab, Bitbucket, AWS CodeCommit, and Azure DevOps (see [FUTURE-SCOPE.md](FUTURE-SCOPE.md))
+- Feature requests
+- Screenshots in summaries
 - Automatic merge, close, or label changes
-- Email to people outside the team without approval
+- Emails to people outside the team without approval
 - Central hosting of users' keys or repositories
 
 ## Main risks
@@ -61,12 +66,14 @@ Out (future):
 | Risk | Response |
 |---|---|
 | Random users trigger the agent | Allow-list on every channel; no work starts without it |
-| Spoofed email sender | Authentication results checked, not just the From address |
-| Malicious code in a patch | Human review, no auto-merge, CI for agent PRs runs without secrets |
-| Malicious text in a report | Report text is data; tools limited to an allow-list |
-| Source code sent to an external LLM | Configurable model provider; a self-hosted option is a decision for the architecture review |
-| Wrong root cause | Summaries cite evidence; maintainer approves before posting |
-| Cost overrun | Per-issue budget enforced by the orchestrator |
+| Spoofed email sender | SPF and DKIM must pass, with the DKIM domain matching the sender |
+| Malicious code in a patch | Human review; no auto-merge; CI for agent PRs runs without secrets |
+| Malicious text in a report | Report text is treated as data, and tools are limited to an allow-list |
+| Source code sent to a model | Azure OpenAI runs in the user's own tenant; check the data terms for the resource |
+| Wrong root cause | Summaries cite evidence; a maintainer approves before posting |
+| Patches pass tests but are wrong | Human review; acceptance metric; test coverage stated in each summary |
+| Cost overrun | Per-issue budget and a two-attempt patch limit |
+| Scope too large for the time available | Cut list in [PLAN.md](PLAN.md); the MVP is GitHub plus Gmail only |
 
 Full analysis: [ARCHITECTURE.md](ARCHITECTURE.md#security-and-threat-model).
 
@@ -74,23 +81,23 @@ Full analysis: [ARCHITECTURE.md](ARCHITECTURE.md#security-and-threat-model).
 
 | Weeks | Milestone |
 |---|---|
-| 1 | Reference repository chosen; code graph built; memory schema agreed |
-| 2–3 | GitHub path: allow-listed issue to draft PR on seeded bugs |
-| 4 | Gmail intake with allow-list and generic reply |
-| 5 | Root-cause write-back with approval |
-| 6 | Extension setup flow and self-hosting guide |
-| 7 | Evaluation, demo, and a short write-up |
+| 1 | Reference repository chosen; code graph built; memory and model choices made |
+| 2 | Trust layer designed and reviewed: allow-lists, sender checks, audit log |
+| 3–4 | Gmail intake and GitHub trigger working end to end on seeded bugs |
+| 5 | Reproduce, patch, and draft-PR loop working on seeded bugs |
+| 6 | Summary with citations, approval gate, memory writes |
+| 7 | Evaluation report, self-hosting guide, and demo |
 
-Seven weeks is tight for this scope. The roadmap lists what gets cut first if the schedule slips.
+Seven weeks is tight for the MVP. [PLAN.md](PLAN.md) lists what gets cut first if the schedule slips.
 
 ## Decisions needed
 
-1. Approve the reference repository. Criteria: a repository the team controls, a test suite under ten minutes, and clear contribution rules.
-2. Confirm the phase 1 scope: Gmail intake and GitHub only. Decided; Jira, Zoho, and the other providers are future work.
-3. Approve the model-provider policy: whether source code may be sent to an external LLM provider, or a self-hosted model is required.
+1. Approve the reference repository. Criteria: one the team controls, a test suite under ten minutes, and clear contribution rules.
+2. Choose the Azure OpenAI deployment to test first (GPT-4 or GPT-5), then compare both on the seeded-bug set.
+3. Confirm the Gmail OAuth approach for the reference deployment.
 4. Confirm that the first ten replies to reporters need approval.
-5. Confirm the licence (proposed: MIT) and whether the extension is published on the VS Code Marketplace.
+5. Confirm the licence (MIT, already proposed) and the handling of model data for each deployment.
 
 ## What success looks like
 
-By week 7: an allow-listed report becomes a GitHub issue and a draft PR; a non-allow-listed report is ignored or gets the generic reply; a root-cause summary is posted back to the source; a new user completes setup from the guide; and the evaluation table reports time, acceptance rate, root-cause accuracy, and memory hit rate.
+By week 7: an allow-listed Gmail report becomes a GitHub issue and a draft PR; a non-allow-listed sender is ignored or gets the generic reply; a root-cause summary reaches the reporter after maintainer approval; a new user can set up a fork from the guide; and the evaluation report gives numbers for time, acceptance, root-cause accuracy, and memory hit rate.

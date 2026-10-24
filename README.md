@@ -1,104 +1,69 @@
 # Issue-to-PR Agent
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Status: phase 1 in progress](https://img.shields.io/badge/status-phase%201%20in%20progress-orange.svg)](docs/ROADMAP.md)
+[![Status: planning](https://img.shields.io/badge/status-planning-blue.svg)](docs/PLAN.md)
 
-An open-source agent that turns a trusted bug report into a reviewed draft fix, then explains the root cause back to the reporter.
+An open-source agent idea: turn a trusted bug report into a reviewed draft fix, then send the reporter a summary of the root cause, with a screenshot where it helps.
 
-A report arrives by email. Only allow-listed senders can start the agent. A maintainer adds an `agent-fix` label on GitHub. The agent finds the relevant code using a memory of past fixes and a code graph, reproduces the bug in a sandbox, patches it on a branch, runs the tests, and opens a draft pull request. A maintainer reviews and merges. The agent never pushes to the default branch.
+This repository holds the **project idea, walkthrough, and plan** only. No implementation exists yet.
 
-## Status and scope
+## What the project will do (MVP)
 
-| Area | Phase 1 (current) | Future |
+1. A bug report arrives by **Gmail** from a sender on an allow-list.
+2. A maintainer adds the `agent-fix` label on a **GitHub** issue.
+3. The agent finds the relevant code using memory of past fixes and a code graph.
+4. It reproduces the bug with a failing test in a sandbox.
+5. It patches the code on a branch and runs the tests.
+6. It opens a **draft pull request**. A human reviews and merges.
+7. It sends a **root-cause summary**, with citations, back to the reporter and the GitHub issue, once a maintainer approves it.
+
+The agent never pushes to the default branch and never merges.
+
+## Scope at a glance
+
+| Area | MVP | Future |
 |---|---|---|
 | Intake channel | Gmail | Jira, Zoho |
 | Repository provider | GitHub | GitLab, Bitbucket, AWS CodeCommit, Azure DevOps |
-| API keys | Each user supplies their own | Same |
+| Model | Azure OpenAI (GPT-4 or GPT-5 deployment, user's own key) | Other providers behind the same setting |
+| Work type | Bug reports | Feature requests (with spec approval) |
+| Evidence in summary | Text with citations | Screenshots, with redaction |
+| Setup | Self-hosted, user's own keys | VS Code extension, Marketplace |
 
-**Built so far:** the trust layer and the GitHub webhook receiver. Signature verification, the allow-list, sender authentication for email, the reply rate limit, idempotency, and the audit log are implemented and tested (43 tests).
+The full scope is in [docs/PITCH.md](docs/PITCH.md). The pending items are in [docs/FUTURE-SCOPE.md](docs/FUTURE-SCOPE.md).
 
-**Not built yet:** the Gmail connector, the memory and code graph, the reproduction and patch agents, the sandbox, and write-back. These follow the roadmap in [docs/ROADMAP.md](docs/ROADMAP.md).
+## Documentation
 
-The design is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
-
-## Quick start
-
-Requires Python 3.11 or newer.
-
-```bash
-python -m venv .venv
-. .venv/bin/activate            # Windows: .venv\Scripts\activate
-pip install -e ".[dev]"
-pytest
-```
-
-To run the webhook receiver:
-
-```bash
-cp config/allowlist.example.json config/allowlist.json   # then edit it
-export GITHUB_WEBHOOK_SECRET="a-long-random-string"
-uvicorn issue_to_pr.app:create_app_from_env --factory --port 8000
-```
-
-Point a GitHub repository webhook at `https://<your-host>/webhooks/github`, with content type `application/json` and the same secret. Use a tunnel such as `ngrok` for local development.
-
-## Forks
-
-Forks are welcome. Fork the repository, add your own allow-list and keys, and run it against your own repositories. Your keys stay with your deployment and are never sent to this project.
-
-## System context
-
-```mermaid
-flowchart LR
-  Reporter([Reporter])
-  Maintainer([Maintainer])
-  Gmail[(Gmail)]
-  Repo[(GitHub)]
-  LLM[(LLM provider, your key)]
-  Agent[Issue-to-PR Agent]
-
-  Reporter -->|email| Gmail
-  Reporter -->|issue| Repo
-  Maintainer -->|agent-fix label, review, merge| Repo
-  Gmail --> Agent
-  Repo -->|webhooks| Agent
-  Agent -->|draft PR, comments| Repo
-  Agent -->|reply| Gmail
-  Agent --> LLM
-```
-
-Jira and Zoho intake, and GitLab, Bitbucket, AWS CodeCommit, and Azure DevOps providers, are shown in the architecture document as future work.
+| Document | Audience | What it covers |
+|---|---|---|
+| [docs/PITCH.md](docs/PITCH.md) | Mentor, stakeholders | The problem, the proposal, MVP scope, risks, and decisions needed |
+| [docs/WALKTHROUGH.md](docs/WALKTHROUGH.md) | Anyone new to the project | A worked example, step by step, from report to summary |
+| [docs/PLAN.md](docs/PLAN.md) | Builders | Phases, milestones, cut list, risks, and definition of done |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Architecture review | Components, protocols, trust model, flows, data, security, deployment, decisions |
+| [docs/EVALUATION.md](docs/EVALUATION.md) | Reviewers | Metrics, datasets, targets, and security tests |
+| [docs/FUTURE-SCOPE.md](docs/FUTURE-SCOPE.md) | Everyone | Pending items, grouped by theme, with their dependencies |
 
 ## Principles
 
 1. **Trust is an allow-list, not a judgement.** Only listed senders can start the agent.
 2. **The agent proposes, a human decides.** Draft changes only. Merging, closing, and labelling stay with maintainers.
 3. **Every claim has a source.** Root-cause summaries cite a file, line, commit, or test. Uncited claims are removed.
-4. **Keys stay with the user.** Credentials live on the user's machine or server, never in a central service.
-
-## Documentation
-
-| Document | Audience | What it covers |
-|---|---|---|
-| [docs/PITCH.md](docs/PITCH.md) | Mentor, stakeholders | The problem, the proposal, scope, risks, and decisions |
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Architecture review | Components, protocols, trust model, flows, data, security, deployment, decisions |
-| [docs/EVALUATION.md](docs/EVALUATION.md) | Engineering, reviewers | Metrics, datasets, targets, security tests, and how results are reported |
-| [docs/ROADMAP.md](docs/ROADMAP.md) | Everyone | Phases, cut list, risks, and definition of done |
+4. **Keys stay with the user.** Credentials live in the user's own deployment, never in a central service.
 
 ## Technology
 
-| Technology | Used for | Phase |
-|---|---|---|
-| **FastAPI** | Webhook receiver | 1 (built) |
-| **Gmail API** | Email intake and replies | 1 |
-| **A2A** | Communication between specialist agents | 2 |
-| **MCP** | Governed tool access: repository, docs search, sandbox | 2 |
-| **LangGraph** | Orchestration with checkpointed state | 2 |
-| **LlamaIndex** | Retrieval over code and docs | 2 |
-| **Mem0** (or Graphiti) | Persistent memory of past fixes and conventions | 2 |
-| **Graphify** | Code graph of the repository | 2 |
-| **gRPC** | Streaming sandbox results to the orchestrator | 2 |
-| **Langflow** | Intake flows and advocate-editable rules | Later |
+| Technology | Used for |
+|---|---|
+| **Gmail API** | Reading labelled reports; sending replies and summaries |
+| **GitHub API and webhooks** | Triggers, branches, draft PRs, comments |
+| **Azure OpenAI** | The model behind reasoning, patching, and summaries |
+| **LangGraph** | Orchestration with checkpointed state |
+| **A2A** | Communication between specialist agents |
+| **MCP** | Governed tool access: repository, docs search, sandbox |
+| **LlamaIndex** | Retrieval over code and docs |
+| **Mem0** (or Graphiti) | Persistent memory of past fixes and conventions |
+| **Graphify** | Code graph of the repository |
+| **gRPC** | Streaming sandbox results to the orchestrator |
 
 ## Licence
 
