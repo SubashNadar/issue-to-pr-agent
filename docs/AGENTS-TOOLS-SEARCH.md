@@ -288,3 +288,19 @@ The query set comes from the seeded bugs: each bug's report is a query, and its 
 3. Search index and `code-mcp`, with the seeded-bug query set.
 4. Research, reproduction, and patch agents.
 5. Summary and memory writer, then the access matrix tests.
+
+## 9. External MCP servers
+
+These are third-party or vendor servers that the build may use. Each one sits behind the approval layer; none is exposed to an agent directly.
+
+| Server | Publisher | Use in this build | Status |
+|---|---|---|---|
+| GitHub MCP server | GitHub (official) | Base for the read tools in `provider-mcp`, which reduces build work | Repository URL, licence, and permission scopes to confirm |
+| Playwright MCP | Microsoft | Reproducing web-related bugs, inside the sandbox only | Publisher confirmed; sandbox use only |
+| Context7 | Upstash (to confirm) | Current library documentation for the patch agent | Publisher and licence to confirm |
+| Git reference server | Model Context Protocol project | Branch and commit operations inside the worktree | Not verified; confirm before use |
+
+Rules for external servers:
+- Wrap every external server behind the approval gate. Write tools are never exposed to an agent directly.
+- Don't use the memory reference server. Memory is Mem0, with provenance and staleness checks, which the reference server doesn't provide.
+- Pin each server to a version and record it in the audit log.

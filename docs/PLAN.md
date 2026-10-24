@@ -138,3 +138,19 @@ These are what make the system safe to show, and they are the reason for the pro
 1. Which reference repository, and who approves its use.
 2. Whether the first deployment uses GPT-4 or GPT-5, decided by the week-1 comparison.
 3. The data-handling note for each deployment, including Azure's terms for the chosen resource.
+
+## Reference repository (Phase 0)
+
+Candidates, checked against the GitHub API in October 2026:
+
+| Repo | Licence | Stars | Open issues | Last push | Notes |
+|---|---|---|---|---|---|
+| [python-attrs/attrs](https://github.com/python-attrs/attrs) | MIT | 5,860 | 174 | 13 Oct 2026 | Largest issue volume for triage; first pick |
+| [fastapi/typer](https://github.com/fastapi/typer) | MIT | 20,186 | 48 | 15 Oct 2026 | Smaller backlog; fallback if attrs' suite is slow |
+| [pallets/click](https://github.com/pallets/click) | BSD-3-Clause | 17,800 | 86 | 6 Oct 2026 | Larger codebase; less convenient to baseline |
+
+Selection rules:
+- Work on a fork. Live runs happen only on the fork, never on the upstream project.
+- Upstream issue history is read-only evaluation data, used for the evaluation sets.
+- Time the test suite on the build machine. The chosen repo's suite must finish in under ten minutes.
+- Choose between the candidates on suite runtime, then on the number of reproducible historical bugs.

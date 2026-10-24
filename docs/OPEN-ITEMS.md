@@ -53,3 +53,11 @@ These need a party outside the project to act.
 ## Closed items
 
 None yet.
+
+## Added: reference repository and external servers
+
+| # | Item | Why it matters | Owner | Decision needed | Status |
+|---|---|---|---|---|---|
+| 16 | Reference repository | Chooses the codebase the whole evaluation runs on | Project owner | Pick attrs, typer, or click after timing the test suites. | Open |
+| 17 | GitHub MCP server | Its repository, licence, and scopes determine whether it can be the base for `provider-mcp` | Project owner | Confirm the repository and scopes; decide whether to build on it. | Open |
+| 18 | Playwright and Context7 publishers | Their use is planned, and their publishers aren't fully confirmed | Project owner | Confirm each publisher and licence before use. | Open |
