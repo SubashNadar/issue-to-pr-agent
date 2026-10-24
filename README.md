@@ -42,6 +42,7 @@ The full scope is in [docs/PITCH.md](docs/PITCH.md). The pending items are in [d
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Architecture review | Components, protocols, trust model, flows, data, security, deployment, decisions |
 | [docs/EVALUATION.md](docs/EVALUATION.md) | Reviewers | Metrics, datasets, targets, and security tests |
 | [docs/FUTURE-SCOPE.md](docs/FUTURE-SCOPE.md) | Everyone | Pending items, grouped by theme, with their dependencies |
+| [docs/OPEN-ITEMS.md](docs/OPEN-ITEMS.md) | Owner, collaborators | Unresolved decisions and external dependencies, with owners and status |
 
 ## Principles
 
