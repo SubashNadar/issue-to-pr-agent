@@ -104,3 +104,29 @@ Suggested order, based on value and dependency:
 5. Feature-request path, with the spec gate.
 6. VS Code extension and Marketplace publishing.
 7. Further providers, in the order users ask for them.
+
+## Jira and GitHub bridge (proposed module)
+
+**Status:** planned. It is currently after the MVP, because the MVP is Gmail intake and GitHub only.
+
+**What it does:** keeps a Jira ticket and a GitHub issue linked and in sync. A ticket created in Jira becomes a GitHub issue, and status and comments flow both ways without duplicates.
+
+**Why it matters:** teams that use both tools currently copy information by hand. The bridge also gives the agent a second intake path, since a Jira ticket can start the same fix loop as an allow-listed email.
+
+**Design:**
+- **Inbound:** a Jira webhook, verified by its signature. Only allow-listed Jira account IDs can create work, the same rule as for email and GitHub authors.
+- **Outbound:** GitHub events update the Jira ticket: draft PR opened, merged, or closed.
+- **Link table:** every pair of Jira key and GitHub issue number is stored once. Redelivered events are ignored by their delivery ID.
+- **Loop prevention:** the bridge marks its own writes, and ignores events that it caused. Without this, two-way sync loops.
+- **Conflict policy:** the GitHub issue is the source of truth for the fix. Jira holds the request and the status. A conflict is logged and routed to a maintainer, never resolved silently.
+- **Writes:** every write to Jira or GitHub follows the approval rules in `BOUNDARIES.md`.
+
+**Measures:**
+- duplicate issues created (target: zero)
+- sync lag between the two systems (target: under one minute for each event)
+- loops detected and stopped (target: zero in a run)
+- conflicts routed to a human, with the reason
+
+**Dependencies:** the Jira intake path, the approval service, and the same audit log as the rest of the agent.
+
+**Scope impact:** adding it to the MVP would extend the seven-week plan. The cut list in `PLAN.md` would have to change, most likely by moving the summary write-back to Jira after the MVP.

@@ -61,3 +61,11 @@ None yet.
 | 16 | Reference repository | Chooses the codebase the whole evaluation runs on | Project owner | Pick attrs, typer, or click after timing the test suites. | Open |
 | 17 | GitHub MCP server | Its repository, licence, and scopes determine whether it can be the base for `provider-mcp` | Project owner | Confirm the repository and scopes; decide whether to build on it. | Open |
 | 18 | Playwright and Context7 publishers | Their use is planned, and their publishers aren't fully confirmed | Project owner | Confirm each publisher and licence before use. | Open |
+
+## Added: Jira and GitHub bridge
+
+| # | Item | Why it matters | Owner | Decision needed | Status |
+|---|---|---|---|---|---|
+| 19 | Bridge in or out of the MVP | The MVP is Gmail and GitHub only. Adding the bridge extends the schedule. | Project owner | Keep the bridge after the MVP, or move it in and cut something else. | Open |
+| 20 | Jira account and permissions | The bridge needs a Jira service account with the narrowest permissions that work | Project owner | Confirm the Jira site, the service account, and the scopes. | Open |
+| 21 | Conflict owner | When Jira and GitHub disagree, someone must decide | Project owner | Name the maintainer who receives conflict reports. | Open |
