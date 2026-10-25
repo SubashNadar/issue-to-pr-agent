@@ -21,7 +21,14 @@ Each item says what it adds, why it waits, and what it depends on. Items are gro
 | AWS CodeCommit | Repositories, pull requests, and triggers | Different event model; no issue tracker of its own | Decide the issue source (often Jira or GitHub) |
 | Azure DevOps | Work items, repositories, pull requests, and service hooks | Same reason | Same adapter; a scoped personal access token for the project |
 
-The adapter interface is designed so that adding a provider doesn't change the pipeline.
+The adapter interface is designed so that adding a provider doesn't change the pipeline. Code hosts, trackers, and chat tools are separate ports; see [INTEGRATIONS.md](INTEGRATIONS.md).
+
+| Item | What it adds | Why it waits | Depends on |
+|---|---|---|---|
+| Asana intake | Asana tasks start the fix loop, with a tag in place of the `agent-fix` label | Same reason as Jira and Zoho | Tracker port; Asana webhook handshake |
+| Slack approvals | Approve and reject buttons in a channel | Approval channel not chosen yet (open item 1) | Notifier port; approval service |
+| Zoho Cliq approvals | The same flow through a Cliq bot | Same reason | Notifier port |
+| Microsoft Teams approvals | The same flow through Adaptive Cards | Same reason | Notifier port |
 
 ## 3. Feature requests
 

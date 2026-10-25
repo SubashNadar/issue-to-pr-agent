@@ -42,6 +42,7 @@ The agent never pushes to the default branch and never merges.
 | [docs/PLAN.md](docs/PLAN.md) | Builders | Phases, roadmap chart, milestones, cut list, risks, and definition of done |
 | [docs/VERIFICATION.md](docs/VERIFICATION.md) | Reviewers | Test layers, metrics, datasets, targets, and security tests |
 | [docs/DEMO.md](docs/DEMO.md) | Demo owner, reviewers | Demo scenes with expected results, and rehearsal rules |
+| [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md) | Builders, architecture review | How the agent plugs into any organisation: code host, tracker, and chat adapters, config, and contract tests |
 | [docs/BOUNDARIES.md](docs/BOUNDARIES.md) | Maintainers, reviewers | What the agent may and must never do, and why |
 | [docs/FUTURE-SCOPE.md](docs/FUTURE-SCOPE.md) | Everyone | Pending items, grouped by theme, with their dependencies |
 | [docs/OPEN-ITEMS.md](docs/OPEN-ITEMS.md) | Owner, collaborators | Unresolved decisions and external dependencies |

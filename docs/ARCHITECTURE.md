@@ -44,7 +44,7 @@ Contents:
 | Reliability | Duplicate or replayed events do not create duplicate work | Idempotency key per event; checkpointed orchestration |
 | Cost | Bounded spend per issue | Per-issue budget enforced by the orchestrator |
 | Latency | Median 20 minutes from label to draft on seeded bugs | Parallel research; bounded retries |
-| Portability | Adding a provider does not change the pipeline | Provider adapter interface |
+| Portability | Adding a provider does not change the pipeline | CodeHost, Tracker, and Notifier ports ([INTEGRATIONS.md](INTEGRATIONS.md)) |
 | Operability | A new user can self-host in under 30 minutes | Docker Compose, setup command, extension wizard |
 
 ## Container view
@@ -121,7 +121,7 @@ flowchart TB
 | Reproduction agent | Writes and runs a failing test in the sandbox | A2A service, streams over gRPC |
 | Patch agent | Edits files on a branch, within a two-attempt budget | A2A service |
 | Summary agent | Writes the root-cause summary with citations | A2A service |
-| Provider adapters | One interface for GitHub, GitLab, and Bitbucket | Python modules behind a common interface |
+| Provider adapters | Three ports (CodeHost, Tracker, Notifier) with one adapter per vendor, chosen in `org.yaml`. See [INTEGRATIONS.md](INTEGRATIONS.md) | Python modules behind common interfaces, tested by one contract suite |
 | Sandbox runner | Runs tests with no network, no secrets, and limits | Container service exposed through MCP and gRPC |
 | Memory | Stores module owners, past fixes, root causes, flaky tests | Mem0, self-hosted |
 | Code graph | Dependencies between files | Graphify output, refreshed after merges |
