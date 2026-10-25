@@ -35,6 +35,7 @@ flowchart LR
     UC8((Set up a fork with own keys))
     UC9((Monitor runs and cost))
     UC10((Audit a past run))
+    UC11((Connect the team's tools))
   end
 
   Reporter --> UC1
@@ -47,6 +48,7 @@ flowchart LR
   Operator --> UC8
   Operator --> UC9
   Auditor --> UC10
+  Operator --> UC11
 ```
 
 ## UC1: Report a bug by email
@@ -136,6 +138,35 @@ Dashboards show step latency and failure rates, approval waits, cost per issue, 
 **Actor:** Auditor. **Goal:** confirm what the agent did and why.
 
 Every run has a trace and an audit record. The auditor can see each trigger decision, each tool call, each approval, and the versions of the prompts, rules, and models used.
+
+## UC11: Connect the team's tools
+
+**Actor:** Operator. **Goal:** run the agent on the team's existing code host, tracker, and chat, with no code change.
+
+Example: code in AWS CodeCommit, tickets in Jira, approvals in Slack.
+
+```mermaid
+sequenceDiagram
+  participant Op as Operator
+  participant Cfg as org.yaml
+  participant Ag as Agent
+  participant J as Jira
+  participant S as Slack
+  participant CC as CodeCommit
+  Op->>Cfg: code_host codecommit, tracker jira, notifier slack
+  Op->>Ag: Start deployment
+  Ag->>Ag: Load adapters, run contract self-check
+  J->>Ag: Webhook: PAY-142 labelled agent-fix
+  Ag->>Ag: Allow-list check on Jira account ID
+  Ag->>Ag: Research, reproduce, patch
+  Ag->>S: Approval request with diff summary
+  S->>Ag: Maintainer approves
+  Ag->>CC: Push agent/PAY-142, open pull request
+  CC-->>Ag: EventBridge: pull request merged
+  Ag->>J: Root-cause summary comment (approved)
+```
+
+Moving to a Bitbucket team changes two lines of `org.yaml`. See [INTEGRATIONS.md](INTEGRATIONS.md).
 
 ## Use cases not included
 

@@ -29,11 +29,39 @@ Trust is an allow-list, not a judgement about the person.
 - **Email:** only allow-listed addresses. The mail must pass SPF and DKIM checks for the sender's domain. Unauthenticated mail is dropped with no reply. An authenticated stranger gets one generic reply per day: "You are not permitted to raise issues through this channel."
 - **GitHub issues:** only allow-listed authors can start the agent, and a listed maintainer must add the `agent-fix` label. Anyone else can still file an issue; the agent ignores it.
 
+## Works with any team's stack
+
+Teams keep code and tickets in different places. The agent never calls a vendor directly: it uses three ports, and each organisation chooses its adapters. Details are in [INTEGRATIONS.md](INTEGRATIONS.md).
+
+```mermaid
+flowchart LR
+  subgraph OrgA[Team A]
+    A1[AWS CodeCommit] --- A2[Jira] --- A3[Slack]
+  end
+  subgraph OrgB[Team B]
+    B1[Bitbucket] --- B2[Jira] --- B3[Zoho Cliq]
+  end
+  subgraph OrgC[Team C]
+    C1[GitHub] --- C2[GitHub Issues] --- C3[Slack]
+  end
+  subgraph Agent[Issue-to-PR Agent - same pipeline everywhere]
+    P1[CodeHost port]
+    P2[Tracker port]
+    P3[Notifier port]
+  end
+  OrgA -- org.yaml --> Agent
+  OrgB -- org.yaml --> Agent
+  OrgC -- org.yaml --> Agent
+```
+
+Most coding agents assume GitHub. Many enterprise teams don't use it. Fitting the team's existing tools is a differentiator.
+
 ## Why it's worth building
 
 - **Measurable.** Each stage has a number: time to draft, acceptance rate, root-cause accuracy, and memory hit rate.
 - **Improves with use.** Memory of past fixes should make the next fix in the same module faster. This is testable.
 - **Current standards.** It uses MCP for tools, A2A between agents, and gRPC for the sandbox.
+- **Works with any stack.** Code host, tracker, and chat are adapters chosen per organisation.
 - **Open source with your own keys.** Anyone can fork it and run it with their own Azure OpenAI deployment and their own GitHub App.
 
 ## MVP scope

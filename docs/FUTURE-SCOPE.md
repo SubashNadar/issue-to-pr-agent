@@ -4,6 +4,31 @@
 
 Each item says what it adds, why it waits, and what it depends on. Items are grouped by theme. Nothing here is scheduled.
 
+## Roadmap view
+
+```mermaid
+flowchart LR
+  MVP[MVP<br/>Gmail + GitHub<br/>bug reports] --> H1
+  subgraph H1[Next: fit more teams]
+    J[Jira intake and write-back]
+    SL[Slack or Cliq approvals]
+    CC[CodeCommit and Bitbucket adapters]
+    MP[Model provider setting]
+  end
+  H1 --> H2
+  subgraph H2[Then: more kinds of work]
+    FR[Feature requests with spec gate]
+    VE[Visual evidence for web bugs]
+    BR[Jira and GitHub bridge]
+  end
+  H2 --> H3
+  subgraph H3[Later: product]
+    VS[VS Code extension and Marketplace]
+    GL[GitLab, Azure DevOps, Zoho, Asana, Teams]
+    TS[Second reviewer for risky paths]
+  end
+```
+
 ## 1. More intake channels
 
 | Item | What it adds | Why it waits | Depends on |

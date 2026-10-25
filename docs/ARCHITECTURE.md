@@ -49,6 +49,41 @@ Contents:
 
 ## Container view
 
+### System context
+
+```mermaid
+flowchart LR
+  Reporter([Reporter])
+  Maintainer([Maintainer])
+  Operator([Operator])
+  Auditor([Auditor])
+
+  Agent[Issue-to-PR Agent<br/>one deployment per organisation]
+
+  CH[(Code host<br/>GitHub, GitLab, Bitbucket, CodeCommit)]
+  TK[(Tracker<br/>Gmail, GitHub Issues, Jira, Zoho, Asana)]
+  CHAT[(Chat<br/>Slack, Zoho Cliq, Teams)]
+  LLM[(LLM provider<br/>Azure OpenAI)]
+  OBS[(Langfuse and OpenTelemetry)]
+
+  Reporter -->|reports a bug| TK
+  TK -->|fix requested| Agent
+  Agent -->|summary, questions| TK
+  Agent -->|branch, draft PR| CH
+  CH -->|merged, closed| Agent
+  Agent -->|approval requests| CHAT
+  Maintainer -->|approve, reject| CHAT
+  Maintainer -->|review, merge| CH
+  Agent --> LLM
+  Agent --> OBS
+  Operator -->|org.yaml, keys, dashboards| Agent
+  Auditor -->|traces, audit log| OBS
+```
+
+The agent only reaches the code host, tracker, and chat through the adapters in [INTEGRATIONS.md](INTEGRATIONS.md).
+
+### Containers
+
 ```mermaid
 flowchart TB
   subgraph Intake
@@ -74,7 +109,7 @@ flowchart TB
   end
 
   subgraph Tools
-    VCS[Provider adapters - GitHub, GitLab, Bitbucket]
+    VCS[Adapters - CodeHost, Tracker, Notifier]
     DOCS[Docs search - MCP]
     SBX[Sandbox runner - MCP and gRPC]
   end
@@ -306,7 +341,7 @@ sequenceDiagram
   P->>W: PR opened (or merged) event
   W->>O: Start summary task
   O->>SU: Write summary with citations
-  SU-->>O: Summary; uncited claims removed
+  SU-->>O: Summary, uncited claims removed
   O->>Q: Request approval to post
   Q-->>O: Approved
   O->>P: Post summary to issue

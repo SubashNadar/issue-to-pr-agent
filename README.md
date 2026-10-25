@@ -19,6 +19,35 @@ This repository holds the **idea, use cases, plan, and verification approach** o
 
 The agent never pushes to the default branch and never merges.
 
+## System at a glance
+
+```mermaid
+flowchart LR
+  R([Reporter]) --> T[Tracker<br/>Gmail, GitHub Issues, Jira]
+  T --> TR{Trust layer<br/>allow-list, signatures}
+  TR -- refused --> X[Ignored or<br/>generic reply]
+  TR -- trusted --> O[LangGraph<br/>orchestrator]
+  O --> RS[Research<br/>hybrid search, memory, code graph]
+  RS --> RP[Reproduce<br/>failing test in sandbox]
+  RP --> PA[Patch<br/>agent/* branch]
+  PA --> AP{Maintainer<br/>approves?}
+  AP -- yes --> PR[Draft PR<br/>GitHub, GitLab, Bitbucket, CodeCommit]
+  AP -- no --> O
+  PR --> SU[Root-cause summary<br/>with citations]
+  SU --> R
+  O -.-> LF[(Langfuse traces<br/>cost, scores)]
+```
+
+## Works with your stack
+
+The agent talks to three ports, and each organisation picks its adapters in one `org.yaml`. See [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md).
+
+| Port | Adapters |
+|---|---|
+| Code host | GitHub (MVP), GitLab, Bitbucket, AWS CodeCommit, Azure DevOps |
+| Tracker | Gmail and GitHub Issues (MVP), Jira, Zoho, Asana |
+| Chat for approvals | Slack, Zoho Cliq, Microsoft Teams |
+
 ## Scope at a glance
 
 | Area | MVP | Future |
@@ -42,6 +71,7 @@ The agent never pushes to the default branch and never merges.
 | [docs/PLAN.md](docs/PLAN.md) | Builders | Phases, roadmap chart, milestones, cut list, risks, and definition of done |
 | [docs/VERIFICATION.md](docs/VERIFICATION.md) | Reviewers | Test layers, metrics, datasets, targets, and security tests |
 | [docs/DEMO.md](docs/DEMO.md) | Demo owner, reviewers | Demo scenes with expected results, and rehearsal rules |
+| [docs/TECHNOLOGY.md](docs/TECHNOLOGY.md) | Builders, mentor | Every technology by layer, why it was chosen, SLOs, and the NIIT rubric mapping |
 | [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md) | Builders, architecture review | How the agent plugs into any organisation: code host, tracker, and chat adapters, config, and contract tests |
 | [docs/BOUNDARIES.md](docs/BOUNDARIES.md) | Maintainers, reviewers | What the agent may and must never do, and why |
 | [docs/FUTURE-SCOPE.md](docs/FUTURE-SCOPE.md) | Everyone | Pending items, grouped by theme, with their dependencies |
