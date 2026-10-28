@@ -9,7 +9,7 @@ This repository holds the **idea, use cases, plan, and verification approach** o
 
 ## What it does (MVP)
 
-1. A bug report arrives as a **GitHub** issue from an allow-listed author. (Gmail or Jira intake through Langflow is an optional extra in release R5.)
+1. A bug report arrives through a **Langflow chat box** (phase 1), or later as a GitHub issue, Jira ticket, or email. See [CHAT-AND-LOCAL-MODE.md](docs/CHAT-AND-LOCAL-MODE.md).
 2. A listed maintainer adds the `agent-fix` label.
 3. The agent finds the relevant code using memory of past fixes, a code graph, and search.
 4. It reproduces the bug with a failing test in a sandbox.
@@ -45,14 +45,14 @@ The agent talks to three ports, and each organisation picks its adapters in one 
 | Port | Adapters |
 |---|---|
 | Code host | GitHub (MVP), GitLab, Bitbucket, AWS CodeCommit, Azure DevOps |
-| Tracker | GitHub Issues (phase 1), Jira or Gmail via Langflow (R5, optional), Zoho, Asana |
+| Tracker | Langflow chat (phase 1), GitHub Issues, Jira, Gmail, Zoho, Asana |
 | Chat for approvals | Slack, Zoho Cliq, Microsoft Teams |
 
 ## Scope at a glance
 
 | Area | MVP | Future |
 |---|---|---|
-| Intake channel | GitHub label (phase 1); Langflow intake from Jira or Gmail (R5, optional) | Zoho, Asana |
+| Intake channel | Langflow chat box, local git repository (phase 1) | GitHub Issues, Jira, Gmail, Zoho |
 | Languages | Python | Java, C# (repo profiler already designed) |
 | Repository provider | GitHub | GitLab, Bitbucket, AWS CodeCommit, Azure DevOps |
 | Model | Azure OpenAI: `gpt-5.4-nano` for routing and extraction, `gpt-5.4` for tests, patches, and summaries, `text-embedding-3-large` for search (user's own key) | Other providers behind the same setting |
@@ -73,6 +73,7 @@ The agent talks to three ports, and each organisation picks its adapters in one 
 | [docs/VERIFICATION.md](docs/VERIFICATION.md) | Reviewers | Test layers, metrics, datasets, targets, and security tests |
 | [docs/DEMO.md](docs/DEMO.md) | Demo owner, reviewers | Demo scenes with expected results, and rehearsal rules |
 | [docs/TECHNOLOGY.md](docs/TECHNOLOGY.md) | Builders, mentor | Every technology by layer, why it was chosen, SLOs, and the NIIT rubric mapping |
+| [docs/CHAT-AND-LOCAL-MODE.md](docs/CHAT-AND-LOCAL-MODE.md) | Owner, builders | Phase 1 setup: Langflow chat intake and approvals, and the local git adapter |
 | [docs/REPO-MEMORY.md](docs/REPO-MEMORY.md) | Builders, architecture review | LlamaIndex memory for many repositories in Python, Java, and C#: the repo profiler, merge and manual refresh, incremental updates |
 | [docs/AZURE-SETUP.md](docs/AZURE-SETUP.md) | Owner, builders | Model deployments, which node uses which model, configuration, quota, cost control, and the demo-day checklist |
 | [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md) | Builders, architecture review | How the agent plugs into any organisation: code host, tracker, and chat adapters, config, and contract tests |

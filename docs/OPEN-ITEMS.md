@@ -54,7 +54,7 @@ These need a party outside the project to act.
 
 | # | Item | Why it matters | Owner | Decision needed | Status |
 |---|---|---|---|---|---|
-| 22 | MVP intake for the NIIT capstone | Organisations mostly file bugs in a tracker, not by email. Jira intake also proves the CodeHost and Tracker ports are separate, which matters for CodeCommit. Swapping it for Gmail removes the OAuth items (5, 18, 19). | Project owner | Phase 1 core intake is now the GitHub `agent-fix` label ([PLAN.md](PLAN.md)). Still to choose: Jira or Gmail for the optional Langflow intake in release R5. | Open (narrowed) |
+| 22 | MVP intake for the NIIT capstone | Organisations mostly file bugs in a tracker, not by email. Jira intake also proves the CodeHost and Tracker ports are separate, which matters for CodeCommit. Swapping it for Gmail removes the OAuth items (5, 18, 19). | Project owner | Decided 28 Oct 2026: phase 1 intake is a Langflow chat box and the code is a local git repository ([CHAT-AND-LOCAL-MODE.md](CHAT-AND-LOCAL-MODE.md)). Jira and Gmail move to phase 2. | Closed |
 | 23 | Approval channel through the Notifier port | Item 1 needs a channel. A Slack button gives the demo a visible human decision. | Project owner | Choose a GitHub comment command, a label, or Slack (or Zoho Cliq). | Open |
 | 24 | Structured data for the capstone rubric | The NIIT rubric gives 20% to retrieval and data integration, including routing between RAG, SQL, and hybrid. The task and audit store in PostgreSQL can answer SQL questions such as fixes merged per project and cost per issue. | Project owner | Confirm the router and the SQL questions it must answer, and add them to [VERIFICATION.md](VERIFICATION.md). | Open |
 

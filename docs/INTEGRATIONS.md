@@ -24,9 +24,9 @@ The agent never calls a vendor API directly. It talks to three ports, and each d
 
 | Port | What it does for the agent | Adapters |
 |---|---|---|
-| **CodeHost** | Clone, push an `agent/*` branch, open a draft change request, comment on it, receive merge and close events | GitHub, GitLab, Bitbucket, AWS CodeCommit, Azure DevOps |
-| **Tracker** | Receive "fix requested" events, read the issue, post the root-cause summary | GitHub Issues, GitLab Issues, Jira, Zoho (Desk, Projects, or BugTracker), Asana, Azure Boards |
-| **Notifier** | Ask an approver for a decision, send status updates, receive approve and reject actions | Slack, Zoho Cliq, Microsoft Teams, email |
+| **CodeHost** | Clone, push an `agent/*` branch, open a draft change request, comment on it, receive merge and close events | Local git (phase 1, see [CHAT-AND-LOCAL-MODE.md](CHAT-AND-LOCAL-MODE.md)), GitHub, GitLab, Bitbucket, AWS CodeCommit, Azure DevOps |
+| **Tracker** | Receive "fix requested" events, read the issue, post the root-cause summary | Langflow chat (phase 1), GitHub Issues, GitLab Issues, Jira, Zoho (Desk, Projects, or BugTracker), Asana, Azure Boards |
+| **Notifier** | Ask an approver for a decision, send status updates, receive approve and reject actions | Langflow chat (phase 1), Slack, Zoho Cliq, Microsoft Teams, email |
 
 CodeHost and Tracker are separate ports on purpose. AWS CodeCommit has no issue tracker of its own, so a CodeCommit organisation always takes issues from somewhere else, usually Jira. A design that assumes "GitHub issue plus GitHub pull request" fails there on day one.
 
@@ -206,8 +206,9 @@ Adding a provider means writing an adapter, passing the contract suite, and addi
 
 | Order | Adapter | Reason |
 |---|---|---|
-| 1 | GitHub (CodeHost and Tracker) | The MVP provider and the fastest live demo |
-| 2 | Gmail (Tracker) | The MVP intake channel |
+| 1 | Local git (CodeHost) and Langflow chat (Tracker, Notifier) | Phase 1: no Jira needed; works on the owner's local repository |
+| 2 | GitHub (CodeHost and Tracker) | Draft PRs in the demo; the most common host |
+| 2b | Gmail (Tracker) | Optional |
 | 3 | Jira (Tracker) | The most common second channel, and the proof that CodeHost and Tracker are separate |
 | 4 | Slack (Notifier) | A visible approval step, if open item 1 chooses chat for approvals |
 | 5 | AWS CodeCommit (CodeHost) | Pairs with Jira; different event model |
