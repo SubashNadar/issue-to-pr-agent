@@ -40,7 +40,7 @@ The chart assumes full-time work for seven weeks. If the available hours are few
 - Choose the reference repository. Criteria: one the team controls, a test suite under ten minutes, and clear contribution rules.
 - Build the code graph for it and keep the report.
 - Choose the memory store: Mem0 for the MVP, unless the time-based questions in the evaluation need Graphiti.
-- Create the Azure OpenAI deployments to test (one GPT-4 and one GPT-5, if both are available in the region).
+- Azure OpenAI deployments created on 28 Oct 2026: `gpt-5.4-nano`, `gpt-5.4`, and `text-embedding-ada-002`. Run the week-1 checks in [AZURE-SETUP.md](AZURE-SETUP.md).
 - Create the GitHub App and the Gmail OAuth client for the reference deployment.
 
 **Exit:** reference repository chosen; code graph report saved; memory store chosen; model deployments and credentials in place.
@@ -87,7 +87,7 @@ The chart assumes full-time work for seven weeks. If the available hours are few
 If the schedule slips, cut in this order. Everything after the first item is a real loss, so cut the earlier items first.
 
 1. Graphify incremental updates: re-run the full graph after each merge instead.
-2. Second deployment-specific model: keep only the model that performs better on the seeded set.
+2. Small-to-strong model escalation: run every node on `gpt-5.4` if the escalation logic isn't ready, and accept the higher cost.
 3. Richer memory: start with Mem0's simple records, without time-based queries.
 4. Summary formatting polish: keep the five parts; drop extra styling.
 
@@ -136,7 +136,7 @@ These are what make the system safe to show, and they are the reason for the pro
 ## Open questions
 
 1. Which reference repository, and who approves its use.
-2. Whether the first deployment uses GPT-4 or GPT-5, decided by the week-1 comparison.
+2. Decided 28 Oct 2026: `gpt-5.4-nano` for cheap steps and `gpt-5.4` for code and summaries. See [AZURE-SETUP.md](AZURE-SETUP.md).
 3. The data-handling note for each deployment, including Azure's terms for the chosen resource.
 
 ## Reference repository (Phase 0)

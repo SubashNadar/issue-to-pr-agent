@@ -69,7 +69,7 @@ Dotted lines are telemetry. Every layer reports to Langfuse and OpenTelemetry.
 |---|---|---|---|
 | **LangGraph** | Manager graph: classify, research, reproduce, patch, summarise; retries and budgets | Stateful graphs, checkpoints, and `interrupt` for approvals | CrewAI: less control over state and resumption |
 | **A2A** | Specialist agents as separate services with Agent Cards | Visible boundaries and task states between agents | In-process sub-graphs: simpler, used if the schedule slips |
-| **Azure OpenAI** | Model for extraction, test writing, patching, summaries | Runs in the user's tenant with their own key | Other providers behind the model setting (future) |
+| **Azure OpenAI** | `gpt-5.4-nano` for extraction, classification, routing, and SQL; `gpt-5.4` for tests, patches, and summaries; `text-embedding-ada-002` for search. See [AZURE-SETUP.md](AZURE-SETUP.md) | Runs in the user's tenant with their own key; the cheap model handles most calls | Other providers behind the model setting (future) |
 
 ### 3. Retrieval and knowledge layer
 

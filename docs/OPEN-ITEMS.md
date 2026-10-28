@@ -21,7 +21,7 @@ Each item says what is unresolved, why it matters, who can close it, and what de
 |---|---|---|---|---|---|
 | 7 | Memory store | Mem0 or Graphiti needs its own storage: a vector store or a graph database. | Project owner | Choose the store and where it runs. | Open |
 | 8 | Graphify behaviour | The current notes come from search summaries, not from running the tool. | Project owner | Run it on the reference repository. Confirm the output files and whether incremental updates are supported. | Open |
-| 9 | Azure OpenAI details | Which GPT-4 and GPT-5 deployments exist in the region, their token quotas, and the data terms for the resource. | Project owner | Confirm the deployments and quotas. Check Microsoft's current data terms for the chosen resource. | Open |
+| 9 | Azure OpenAI details | Deployments created 28 Oct 2026: `gpt-5.4-nano`, `gpt-5.4`, `text-embedding-ada-002`. Quotas, supported parameters, content filters, the embedding model's retirement date, and the data terms are not yet checked. | Project owner | Run the week-1 checks in [AZURE-SETUP.md](AZURE-SETUP.md). | Partly done |
 | 10 | Seeded bugs | None exist yet. The evaluation needs ground-truth bugs, each with a failing test. | Project owner | Decide how many bugs, where they come from, and who reviews them. | Open |
 | 11 | Dependency versions | A2A is still changing. | Project owner | Pin the A2A SDK and LangGraph versions at the start of the build. | Open |
 

@@ -54,7 +54,7 @@ The agent talks to three ports, and each organisation picks its adapters in one 
 |---|---|---|
 | Intake channel | Gmail | Jira, Zoho |
 | Repository provider | GitHub | GitLab, Bitbucket, AWS CodeCommit, Azure DevOps |
-| Model | Azure OpenAI (GPT-4 or GPT-5 deployment, user's own key) | Other providers behind the same setting |
+| Model | Azure OpenAI: `gpt-5.4-nano` for routing and extraction, `gpt-5.4` for tests, patches, and summaries, `text-embedding-ada-002` for search (user's own key) | Other providers behind the same setting |
 | Work type | Bug reports | Feature requests (with spec approval) |
 | Evidence in summary | Text with citations | Screenshots, with redaction |
 | Setup | Self-hosted, user's own keys | VS Code extension, Marketplace |
@@ -72,6 +72,7 @@ The agent talks to three ports, and each organisation picks its adapters in one 
 | [docs/VERIFICATION.md](docs/VERIFICATION.md) | Reviewers | Test layers, metrics, datasets, targets, and security tests |
 | [docs/DEMO.md](docs/DEMO.md) | Demo owner, reviewers | Demo scenes with expected results, and rehearsal rules |
 | [docs/TECHNOLOGY.md](docs/TECHNOLOGY.md) | Builders, mentor | Every technology by layer, why it was chosen, SLOs, and the NIIT rubric mapping |
+| [docs/AZURE-SETUP.md](docs/AZURE-SETUP.md) | Owner, builders | Model deployments, which node uses which model, configuration, quota, cost control, and the demo-day checklist |
 | [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md) | Builders, architecture review | How the agent plugs into any organisation: code host, tracker, and chat adapters, config, and contract tests |
 | [docs/BOUNDARIES.md](docs/BOUNDARIES.md) | Maintainers, reviewers | What the agent may and must never do, and why |
 | [docs/FUTURE-SCOPE.md](docs/FUTURE-SCOPE.md) | Everyone | Pending items, grouped by theme, with their dependencies |

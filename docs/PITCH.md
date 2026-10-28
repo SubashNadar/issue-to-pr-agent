@@ -137,7 +137,7 @@ Seven weeks is tight for the MVP. [PLAN.md](PLAN.md) lists what gets cut first i
 ## Decisions needed
 
 1. Approve the reference repository. Criteria: one the team controls, a test suite under ten minutes, and clear contribution rules.
-2. Choose the Azure OpenAI deployment to test first (GPT-4 or GPT-5), then compare both on the seeded-bug set.
+2. Azure OpenAI deployments are chosen: `gpt-5.4-nano`, `gpt-5.4`, and `text-embedding-ada-002` (see [AZURE-SETUP.md](AZURE-SETUP.md)). Confirm quotas and costs on the seeded-bug set.
 3. Confirm the Gmail OAuth approach for the reference deployment.
 4. Confirm that the first ten replies to reporters need approval.
 5. Confirm the licence (MIT, already proposed) and the handling of model data for each deployment.
