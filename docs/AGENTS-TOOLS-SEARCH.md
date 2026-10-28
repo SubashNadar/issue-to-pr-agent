@@ -256,7 +256,7 @@ flowchart LR
 | Docs | Documentation sections | One chunk per heading section | Repo, path, version |
 | Issues | Closed issues and their fixing commits | One chunk per issue, with linked commit | Repo, state, labels |
 
-How the index is built and kept fresh across repositories and languages is in [REPO-MEMORY.md](REPO-MEMORY.md). The memory store (Mem0 or Graphiti) is separate from the search index. Memory holds decisions and provenance; search holds the code and text they refer to.
+How the index is built and kept fresh across repositories and languages is in [REPO-MEMORY.md](REPO-MEMORY.md). Memory lives in the same LlamaIndex setup, in separate `fixes` and `conventions` collections. Memory holds decisions and provenance; the `code` and `docs` collections hold the code and text they refer to.
 
 ### Retrieval rules
 
@@ -302,5 +302,5 @@ These are third-party or vendor servers that the build may use. Each one sits be
 
 Rules for external servers:
 - Wrap every external server behind the approval gate. Write tools are never exposed to an agent directly.
-- Don't use the memory reference server. Memory is Mem0, with provenance and staleness checks, which the reference server doesn't provide.
+- Don't use the memory reference server. Memory is the LlamaIndex `fixes` and `conventions` collections, with provenance and staleness checks, which the reference server doesn't provide.
 - Pin each server to a version and record it in the audit log.

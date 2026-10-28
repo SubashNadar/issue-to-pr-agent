@@ -19,7 +19,7 @@ Each item says what is unresolved, why it matters, who can close it, and what de
 
 | # | Item | Why it matters | Owner | Decision needed | Status |
 |---|---|---|---|---|---|
-| 7 | Memory store | Mem0 or Graphiti needs its own storage. [REPO-MEMORY.md](REPO-MEMORY.md) proposes LlamaIndex `fixes` and `conventions` collections in pgvector instead, for the MVP. | Project owner | Accept the LlamaIndex proposal, or keep Mem0. | Proposed |
+| 7 | Memory store | Mem0 or Graphiti needs its own storage. Decided 28 Oct 2026: LlamaIndex `fixes` and `conventions` collections in pgvector, as in [REPO-MEMORY.md](REPO-MEMORY.md). | Project owner | None. | Closed |
 | 8 | Graphify behaviour | The current notes come from search summaries, not from running the tool. | Project owner | Run it on the reference repository. Confirm the output files and whether incremental updates are supported. | Open |
 | 9 | Azure OpenAI details | Deployments created 28 Oct 2026: `gpt-5.4-nano`, `gpt-5.4`, `text-embedding-3-large`, on a personal subscription. Quotas, supported parameters, content filters, embedding dimensions, and the data terms are not yet checked. | Project owner | Run the week-1 checks in [AZURE-SETUP.md](AZURE-SETUP.md). | Partly done |
 | 10 | Seeded bugs | None exist yet. The evaluation needs ground-truth bugs, each with a failing test. | Project owner | Decide how many bugs, where they come from, and who reviews them. | Open |

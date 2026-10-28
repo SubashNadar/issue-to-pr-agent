@@ -20,7 +20,7 @@ flowchart TB
     LI[LlamaIndex: code, docs, past fixes]
     HY[Hybrid search: BM25 + vectors, RRF, reranker]
     PG[(PostgreSQL + pgvector)]
-    MEM[(Mem0 memory)]
+    MEM[(LlamaIndex memory)]
     GRA[(Graphify code graph)]
   end
   subgraph L4[4 External tools layer]
@@ -78,7 +78,7 @@ Dotted lines are telemetry. Every layer reports to Langfuse and OpenTelemetry.
 | **LlamaIndex** | Ingestion and retrieval over code, docs, and past fixes, with file and line metadata | Code-aware chunking and citations | LangChain retrievers: more glue code |
 | **BM25 + dense vectors** | Hybrid search, fused with Reciprocal Rank Fusion, then reranked | Identifiers and error strings need BM25; symptoms in prose need vectors | Vectors only: misses exact symbol names |
 | **PostgreSQL + pgvector** | Task and audit store, vector index, structured run data | One database for SQL questions and vectors | A separate vector DB such as Qdrant: another service to run |
-| **Mem0** | Memory of past fixes, root causes, module owners | Simple records with provenance | Graphiti: if time-based questions need it (open item 7) |
+| **LlamaIndex memory collections** | Memory of past fixes, root causes, and conventions, refreshed on merge | Same library and database as code search; records carry provenance | Mem0 or Graphiti: if time-based questions need them later |
 | **Graphify** | Code graph of file dependencies | Neighbourhood search around a failing file | Tree-sitter call graph built by hand |
 
 The router sends each question to the right source: **RAG** for code and docs, **SQL** for run history ("fixes merged in `auth/` last month, and their cost"), or **hybrid** ("have we fixed a bug like this before, and which files did it touch?"). See open item 24.

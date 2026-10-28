@@ -94,7 +94,7 @@ flowchart TB
   subgraph Core
     WH[Webhook receiver]
     ORC[Orchestrator - LangGraph]
-    MEM[(Memory - Mem0)]
+    MEM[(Memory - LlamaIndex fixes, conventions)]
     GR[(Code graph - Graphify output)]
     IDX[(Vector index - LlamaIndex)]
     DB[(Task and audit store - PostgreSQL)]
@@ -158,7 +158,7 @@ flowchart TB
 | Summary agent | Writes the root-cause summary with citations | A2A service |
 | Provider adapters | Three ports (CodeHost, Tracker, Notifier) with one adapter per vendor, chosen in `org.yaml`. See [INTEGRATIONS.md](INTEGRATIONS.md) | Python modules behind common interfaces, tested by one contract suite |
 | Sandbox runner | Runs tests with no network, no secrets, and limits | Container service exposed through MCP and gRPC |
-| Memory | Stores module owners, past fixes, root causes, flaky tests | Mem0, self-hosted |
+| Memory | Stores past fixes, root causes, and conventions; module owners and flaky tests as SQL rows | LlamaIndex collections in pgvector; see [REPO-MEMORY.md](REPO-MEMORY.md) |
 | Code graph | Dependencies between files | Graphify output, refreshed after merges |
 | Vector index | Retrieval over code and docs | LlamaIndex with pgvector |
 | Audit store | Tasks, tool calls, decisions | PostgreSQL, append-only for audit tables |
@@ -567,7 +567,7 @@ Keys are held in the OS secret store on the user's machine and in the user's ser
 | 2 | Tool access | Per-agent tools; MCP | MCP | One governed access layer with approval gates | Accepted |
 | 3 | Orchestration | Script; LangGraph | LangGraph | Checkpointed state, resumable work | Accepted |
 | 4 | Retrieval | Plain vector store; LlamaIndex | LlamaIndex | Metadata filtering and citations built in | Accepted |
-| 5 | Memory | Mem0; Graphiti | Mem0 for v1 | Simpler to run; move to Graphiti if time-based queries matter | Proposed, measure in week 1 |
+| 5 | Memory | Mem0; Graphiti; LlamaIndex collections | LlamaIndex `fixes` and `conventions` collections | One retrieval technology for code and memory, in the same database; Mem0 or Graphiti later if time-based queries matter | Accepted 28 Oct 2026 |
 | 6 | Code graph | None; Graphify | Graphify | Structural answers the vector index can't give | Accepted, verify incremental updates |
 | 7 | Intake tooling | Built-in connectors; custom components; Composio | Custom components | No confirmed built-in Gmail component; most control. Gmail first; Jira and Zoho later | Accepted |
 | 8 | Trust | Judge the request; allow-list | Allow-list | Predictable and auditable | Accepted |

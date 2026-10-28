@@ -97,7 +97,7 @@ The agent talks to three ports, and each organisation picks its adapters in one 
 | **A2A** | Communication between specialist agents |
 | **MCP** | Governed tool access: email, repository, docs, code, sandbox, memory, approvals |
 | **LlamaIndex** | Retrieval over code, docs, and past fixes |
-| **Mem0** (or Graphiti) | Persistent memory of past fixes and conventions |
+| **LlamaIndex memory collections** | Persistent memory of past fixes and conventions, refreshed on merge (see [REPO-MEMORY.md](docs/REPO-MEMORY.md)) |
 | **Graphify** | Code graph of the repository |
 | **gRPC** | Streaming sandbox results to the orchestrator |
 | **OpenTelemetry and Langfuse** | Traces, model-call records, cost |

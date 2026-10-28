@@ -23,7 +23,7 @@ The agent keeps an "AI memory" of every connected repository: its code, its docs
 
 All four live in PostgreSQL with pgvector in one table per collection, with `repo` as a metadata filter. Keyword search uses PostgreSQL full-text search on the same rows, so hybrid search needs no second system.
 
-**Proposal for the MVP:** the `fixes` and `conventions` collections take over the job planned for Mem0 (open item 7). That leaves one memory technology to build and explain in the viva. Mem0 or Graphiti can come back later if time-based questions need them.
+**Decided 28 Oct 2026:** the `fixes` and `conventions` collections take over the job planned for Mem0 (open item 7, closed). That leaves one memory technology to build and explain in the viva. Mem0 or Graphiti can come back later if time-based questions need them.
 
 ## Deciding per repository: the repo profiler
 

@@ -39,7 +39,7 @@ The chart assumes full-time work for seven weeks. If the available hours are few
 
 - Choose the reference repository. Criteria: one the team controls, a test suite under ten minutes, and clear contribution rules.
 - Build the code graph for it and keep the report.
-- Choose the memory store: Mem0 for the MVP, unless the time-based questions in the evaluation need Graphiti.
+- Memory store decided: LlamaIndex `fixes` and `conventions` collections in pgvector (see [REPO-MEMORY.md](REPO-MEMORY.md)).
 - Azure OpenAI deployments created on 28 Oct 2026: `gpt-5.4-nano`, `gpt-5.4`, and `text-embedding-3-large`, on the owner's personal subscription. Run the week-1 checks in [AZURE-SETUP.md](AZURE-SETUP.md).
 - Create the GitHub App and the Gmail OAuth client for the reference deployment.
 
@@ -88,7 +88,7 @@ If the schedule slips, cut in this order. Everything after the first item is a r
 
 1. Graphify incremental updates: re-run the full graph after each merge instead.
 2. Small-to-strong model escalation: run every node on `gpt-5.4` if the escalation logic isn't ready, and accept the higher cost.
-3. Richer memory: start with Mem0's simple records, without time-based queries.
+3. Richer memory: keep only the `fixes` collection and skip `conventions`.
 4. Summary formatting polish: keep the five parts; drop extra styling.
 
 Do not cut:
