@@ -47,6 +47,9 @@ Chat commands the same flow understands:
 | `approve 12` / `reject 12 <reason>` | Calls `POST /approvals` for the pending gate |
 | `reindex my-api` | Calls `POST /repos/{id}/memory/refresh` |
 | `repos` | Lists connected repos with language and indexed commit |
+| `add repo C:\code\my-shop` | Onboards a folder: scan, profile, embed, code map, generated docs and scripts. See [REPO-ONBOARDING.md](REPO-ONBOARDING.md) |
+| `approve scripts my-shop` | Allows the generated `run-app.bat` and `run-tests.bat` to run |
+| `where my-shop "coupon gives 500"` | Ranks the most likely files without starting a fix |
 
 The flow is exported as `langflow/chat-intake.json` and kept in the repo.
 

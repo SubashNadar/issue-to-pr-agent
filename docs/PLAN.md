@@ -59,7 +59,8 @@ Seven weeks at full time. With fewer hours, the dates stretch and the cut list a
 - `docker-compose.yml`: PostgreSQL with pgvector, Langfuse, Langflow, the API.
 - Azure checks from [AZURE-SETUP.md](AZURE-SETUP.md): smoke tests, supported parameters, quota.
 - FastAPI skeleton, Pydantic settings, `.env.example`, pytest running in CI.
-- Register the local repo (`itp repo add --path ...`).
+- Register the local repo with `add repo PATH` in chat or `itp repo add --path ...`: scan (respecting `.gitignore`, skipping secrets), profile, and embed, with progress shown in chat. See [REPO-ONBOARDING.md](REPO-ONBOARDING.md).
+- `scripts\setup.bat`, `start.bat`, `stop.bat` to run the agent itself in one click.
 
 **Demo:** a traced model call in Langfuse, and the seeded bugs listed with their failing tests.
 
@@ -72,6 +73,7 @@ Seven weeks at full time. With fewer hours, the dates stretch and the cut list a
 - Local git adapter: `git worktree` on `agent/issue-<n>`; your own checkout is never touched.
 - Sandbox: Docker with no network and no secrets; runs `pytest` on a copy of the worktree.
 - Approval: type `approve 12` in the chat. `interrupt()` pauses the graph until then.
+- Generated `run-app.bat` and `run-tests.bat` for the onboarded repo, approved with `approve scripts NAME`; smoke run and test baseline.
 - Langfuse trace for every run.
 
 **Demo:** describe a seeded bug in the chat box. The agent asks one follow-up question, writes a failing test, patches it, waits for `approve`, and leaves `agent/issue-<n>` with a patch file and summary.
@@ -83,16 +85,19 @@ Seven weeks at full time. With fewer hours, the dates stretch and the cut list a
 - Critic node: tests pass, every claim cited, confidence score. Low confidence or an exhausted budget escalates to the maintainer with full context.
 - "Not reproduced" path: a comment asking for specific detail, no patch.
 - Summary agent: five-part root-cause summary with citations, behind its own approval.
+- Generated `FUNCTIONAL.md` and `TECHNICAL.md` for each onboarded repo, every statement cited; `summaries` collection for top-down retrieval.
 
 **Demo:** scenes 4, 6, 7 and 8, showing when the agent refuses or chooses not to answer.
 
 ### R3: Memory and routing (week 5)
 
-- Repo profiler (Python only in phase 1, with Java and C# detected and reported as "phase 2").
+- Repo profiler (first version in R0 onboarding): Python only in phase 1, with Java and C# detected and reported as "phase 2".
 - Incremental refresh on PR merge and on `/agent reindex`; `index_state` and `index_runs` tables.
 - `fixes` collection written when an agent PR is merged and its summary approved.
 - SQL tool (read-only role) over runs, issues, costs and index tables.
 - Router: RAG, SQL, or hybrid, with the route recorded in the trace.
+- Code map (`code_nodes`, `code_edges`) and route table; ranked "most likely file" with reasons; `where NAME "text"` chat command.
+- Playwright reproduction for UI bugs: screenshot, console errors, failed requests, `trace.zip`, traced back to a file through the route table.
 
 **Demo:** merge the R1 PR and show the `index_runs` row; then ask "where is the date parsing code?" (RAG), "how many fixes merged this week and what did they cost?" (SQL), and "have we fixed a bug like this before?" (hybrid).
 
@@ -102,6 +107,7 @@ Seven weeks at full time. With fewer hours, the dates stretch and the cut list a
 - Run the 10 seeded bugs end to end, three times each, for pass^k.
 - Red-team set: injection in issue text, forged events, attempts to push outside `agent/*`.
 - Small-to-strong model escalation; measure cost and latency both ways.
+- `scripts\e2e.bat`: the 10 seeded bugs sent through the chat; SLO "right file in top three" for at least 8 of 10.
 - SLO report following [VERIFICATION.md](VERIFICATION.md).
 
 **Demo:** the SLO dashboard, the routing confusion matrix, and the cost per issue.
@@ -127,9 +133,11 @@ Cut from the top. Each release still stands on its own.
 
 1. GitHub draft PRs and Slack approvals (R5): keep the local branch and chat approvals.
 2. React UI (R5): demo through the Langflow chat and Langfuse.
-3. Graphify code graph: rely on hybrid search alone.
-4. Small-to-strong model escalation (R4): run every node on `gpt-5.4` and accept the cost.
-5. `conventions` collection (R3): keep only `fixes`.
+3. Playwright reproduction (R3): reproduce with pytest only, and trace through the code map.
+4. Code map and route table (R3): rely on hybrid search and summaries alone. (Graphify is already optional; our own map replaces it.)
+5. `FUNCTIONAL.md` and `TECHNICAL.md` (R2): keep the repo summary only.
+6. Small-to-strong model escalation (R4): run every node on `gpt-5.4` and accept the cost.
+7. `conventions` collection (R3): keep only `fixes`.
 
 Do not cut:
 - signature checks and the maintainer and author allow-lists

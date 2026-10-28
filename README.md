@@ -74,6 +74,7 @@ The agent talks to three ports, and each organisation picks its adapters in one 
 | [docs/DEMO.md](docs/DEMO.md) | Demo owner, reviewers | Demo scenes with expected results, and rehearsal rules |
 | [docs/TECHNOLOGY.md](docs/TECHNOLOGY.md) | Builders, mentor | Every technology by layer, why it was chosen, SLOs, and the NIIT rubric mapping |
 | [docs/CHAT-AND-LOCAL-MODE.md](docs/CHAT-AND-LOCAL-MODE.md) | Owner, builders | Phase 1 setup: Langflow chat intake and approvals, and the local git adapter |
+| [docs/REPO-ONBOARDING.md](docs/REPO-ONBOARDING.md) | Builders, owner | Adding a repo folder: scan, embed, code map, generated FUNCTIONAL and TECHNICAL docs, run and test .bat scripts, Playwright bug reproduction traced to a file |
 | [docs/REPO-MEMORY.md](docs/REPO-MEMORY.md) | Builders, architecture review | LlamaIndex memory for many repositories in Python, Java, and C#: the repo profiler, merge and manual refresh, incremental updates |
 | [docs/AZURE-SETUP.md](docs/AZURE-SETUP.md) | Owner, builders | Model deployments, which node uses which model, configuration, quota, cost control, and the demo-day checklist |
 | [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md) | Builders, architecture review | How the agent plugs into any organisation: code host, tracker, and chat adapters, config, and contract tests |
