@@ -256,7 +256,7 @@ flowchart LR
 | Docs | Documentation sections | One chunk per heading section | Repo, path, version |
 | Issues | Closed issues and their fixing commits | One chunk per issue, with linked commit | Repo, state, labels |
 
-The memory store (Mem0 or Graphiti) is separate from the search index. Memory holds decisions and provenance; search holds the code and text they refer to.
+How the index is built and kept fresh across repositories and languages is in [REPO-MEMORY.md](REPO-MEMORY.md). The memory store (Mem0 or Graphiti) is separate from the search index. Memory holds decisions and provenance; search holds the code and text they refer to.
 
 ### Retrieval rules
 

@@ -72,6 +72,7 @@ The agent talks to three ports, and each organisation picks its adapters in one 
 | [docs/VERIFICATION.md](docs/VERIFICATION.md) | Reviewers | Test layers, metrics, datasets, targets, and security tests |
 | [docs/DEMO.md](docs/DEMO.md) | Demo owner, reviewers | Demo scenes with expected results, and rehearsal rules |
 | [docs/TECHNOLOGY.md](docs/TECHNOLOGY.md) | Builders, mentor | Every technology by layer, why it was chosen, SLOs, and the NIIT rubric mapping |
+| [docs/REPO-MEMORY.md](docs/REPO-MEMORY.md) | Builders, architecture review | LlamaIndex memory for many repositories in Python, Java, and C#: the repo profiler, merge and manual refresh, incremental updates |
 | [docs/AZURE-SETUP.md](docs/AZURE-SETUP.md) | Owner, builders | Model deployments, which node uses which model, configuration, quota, cost control, and the demo-day checklist |
 | [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md) | Builders, architecture review | How the agent plugs into any organisation: code host, tracker, and chat adapters, config, and contract tests |
 | [docs/BOUNDARIES.md](docs/BOUNDARIES.md) | Maintainers, reviewers | What the agent may and must never do, and why |
