@@ -40,7 +40,7 @@ The chart assumes full-time work for seven weeks. If the available hours are few
 - Choose the reference repository. Criteria: one the team controls, a test suite under ten minutes, and clear contribution rules.
 - Build the code graph for it and keep the report.
 - Choose the memory store: Mem0 for the MVP, unless the time-based questions in the evaluation need Graphiti.
-- Azure OpenAI deployments created on 28 Oct 2026: `gpt-5.4-nano`, `gpt-5.4`, and `text-embedding-ada-002`. Run the week-1 checks in [AZURE-SETUP.md](AZURE-SETUP.md).
+- Azure OpenAI deployments created on 28 Oct 2026: `gpt-5.4-nano`, `gpt-5.4`, and `text-embedding-3-large`, on the owner's personal subscription. Run the week-1 checks in [AZURE-SETUP.md](AZURE-SETUP.md).
 - Create the GitHub App and the Gmail OAuth client for the reference deployment.
 
 **Exit:** reference repository chosen; code graph report saved; memory store chosen; model deployments and credentials in place.

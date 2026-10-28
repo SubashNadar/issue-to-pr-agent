@@ -1,6 +1,6 @@
 # Azure OpenAI setup
 
-**Audience:** the project owner and anyone running a fork. **Status:** deployments created 28 Oct 2026; cost and latency baselines not yet measured.
+**Audience:** the project owner and anyone running a fork. **Status:** deployments created 28 Oct 2026 on the owner's personal subscription; cost and latency baselines not yet measured.
 
 The agent uses three Azure OpenAI deployments in one resource. The cheap model handles most calls, and the strong model is used only where code is written or a reporter will read the result. This split is also the cost story for the SLO report.
 
@@ -8,7 +8,7 @@ The agent uses three Azure OpenAI deployments in one resource. The cheap model h
 
 | Role | Model | Used by | Why this model |
 |---|---|---|---|
-| Embeddings | `text-embedding-ada-002` | Indexing and search over code, docs, and past fixes | Deployed and available. 1536 dimensions |
+| Embeddings | `text-embedding-3-large` | Indexing and search over code, docs, and past fixes | Strongest OpenAI embedding model on Azure; can return shortened vectors (see pgvector below) |
 | Small model | `gpt-5.4-nano` | Intake extraction, trust explanation, classification, query routing (RAG, SQL, or hybrid), SQL generation, critic first pass | Cheap and fast for short structured outputs |
 | Strong model | `gpt-5.4` | Failing-test writing, patching, root-cause summary, critic retry when the small model is unsure | Code quality and citations matter here |
 
@@ -29,7 +29,7 @@ flowchart LR
     P --> S[Root-cause summary]
     K2[Critic, retry]
   end
-  subgraph Embed[text-embedding-ada-002]
+  subgraph Embed[text-embedding-3-large]
     E[Index and search<br/>pgvector]
   end
   RT --> E
@@ -50,8 +50,8 @@ AZURE_OPENAI_API_KEY=            # or leave empty and use Entra ID
 AZURE_OPENAI_API_VERSION=        # the version your portal shows for these models
 AZURE_OPENAI_DEPLOYMENT_SMALL=gpt-5.4-nano
 AZURE_OPENAI_DEPLOYMENT_STRONG=gpt-5.4
-AZURE_OPENAI_DEPLOYMENT_EMBED=text-embedding-ada-002
-EMBEDDING_DIMENSIONS=1536
+AZURE_OPENAI_DEPLOYMENT_EMBED=text-embedding-3-large
+EMBEDDING_DIMENSIONS=1536       # passed as `dimensions` on every embedding call
 MAX_TOKENS_PER_ISSUE=            # set from the week-2 baseline
 ```
 
@@ -61,7 +61,14 @@ For keys, prefer Microsoft Entra ID (`DefaultAzureCredential`) over an API key. 
 
 ### pgvector
 
-`text-embedding-ada-002` returns 1536-dimension vectors, so the column is `vector(1536)`. The index records the embedding model and version. Changing the model later means re-indexing everything.
+`text-embedding-3-large` returns 3072 dimensions by default. pgvector's HNSW and IVFFlat indexes support at most 2,000 dimensions for the `vector` type, so a full-size vector can't be indexed as `vector(3072)`. Two options:
+
+| Option | Column | Trade-off |
+|---|---|---|
+| **Shortened vectors (recommended)** | `vector(1536)`, with `dimensions=1536` on every call | Indexable, half the storage, small quality loss that the retrieval tests will show |
+| Full vectors at half precision | `halfvec(3072)` (indexable up to 4,000 dimensions) | Full quality, more storage, needs a recent pgvector |
+
+Use the same `dimensions` value at indexing and query time. The index records the embedding model, version, and dimensions. Changing any of them means re-indexing everything.
 
 ## Things to check in week 1
 
@@ -71,9 +78,8 @@ For keys, prefer Microsoft Entra ID (`DefaultAzureCredential`) over an API key. 
 | 2 | Supported parameters | Newer reasoning-style models can reject `temperature` or `max_tokens` and expect `max_completion_tokens` | Send each parameter once; keep only the ones the deployment accepts |
 | 3 | Quota (tokens per minute) for each deployment | Rate limits are the most likely way a live demo fails | Read the quota in the portal; request an increase now if a seeded-bug run hits it |
 | 4 | Content filters | The injection and security test prompts can trip Azure's filters | Run the red-team set once; record which prompts are blocked and decide whether the block is the right outcome |
-| 5 | `text-embedding-ada-002` retirement date | It is an older model; Azure publishes retirement dates per model | Check the model retirement page. If the date falls before the demo, switch to `text-embedding-3-small` now, while re-indexing is cheap |
+| 5 | Shortened embeddings | Confirm `dimensions=1536` works on the deployment and that search quality holds | Embed the retrieval test set at 1536 and, once, at 3072 (`halfvec`); compare recall |
 | 6 | Data terms for the resource | Code from the test fork is sent to the model | Read Microsoft's current data, privacy, and abuse-monitoring terms for Azure OpenAI and note them in the data-handling note |
-| 7 | Whose subscription it is | Using an employer's tenant for a personal project is a governance problem | Use a personal subscription only |
 
 ## Cost control
 

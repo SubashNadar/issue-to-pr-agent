@@ -54,7 +54,7 @@ The agent talks to three ports, and each organisation picks its adapters in one 
 |---|---|---|
 | Intake channel | Gmail | Jira, Zoho |
 | Repository provider | GitHub | GitLab, Bitbucket, AWS CodeCommit, Azure DevOps |
-| Model | Azure OpenAI: `gpt-5.4-nano` for routing and extraction, `gpt-5.4` for tests, patches, and summaries, `text-embedding-ada-002` for search (user's own key) | Other providers behind the same setting |
+| Model | Azure OpenAI: `gpt-5.4-nano` for routing and extraction, `gpt-5.4` for tests, patches, and summaries, `text-embedding-3-large` for search (user's own key) | Other providers behind the same setting |
 | Work type | Bug reports | Feature requests (with spec approval) |
 | Evidence in summary | Text with citations | Screenshots, with redaction |
 | Setup | Self-hosted, user's own keys | VS Code extension, Marketplace |
