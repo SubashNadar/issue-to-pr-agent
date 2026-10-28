@@ -1,122 +1,149 @@
 # Plan
 
-**Audience:** builders and collaborators. **Status:** planned, not started.
+**Audience:** builders and collaborators. **Status:** planned, not started. Restructured 28 Oct 2026 into demoable releases.
 
 The MVP is the scope in [PITCH.md](PITCH.md). This plan says how to build it, in what order, and what to cut if time runs short. Pending items beyond the MVP are in [FUTURE-SCOPE.md](FUTURE-SCOPE.md).
 
+## How this plan is shaped
+
+Each release is a **thin, working slice that can be demoed on its own**. Nothing is built "for later": every release ends with a short demo on the fork, and each one adds to the last. If time runs out after any release, there is still a complete, honest demo to present.
+
+Phase 1 (the capstone) is **Python repositories on GitHub only**. Java, C#, other code hosts, and other trackers are phase 2. The design already supports them (see [REPO-MEMORY.md](REPO-MEMORY.md) and [INTEGRATIONS.md](INTEGRATIONS.md)), so the viva line is: "built for many languages and hosts; phase 1 proves it on Python and GitHub."
+
 ## Decided before starting
 
-- Intake for the MVP: Gmail only.
-- Repository provider for the MVP: GitHub only.
-- Model: Azure OpenAI, using the user's own key and deployment.
-- Users bring their own API keys, so cost is not a constraint for the MVP. A per-issue cap still exists to protect against runaway loops.
-- Forks are allowed.
-- Licence: MIT.
+- Phase 1 scope: Python repositories, GitHub only. The core trigger is a maintainer adding the `agent-fix` label to a GitHub issue.
+- Extra intake (Langflow flow from Jira or Gmail) comes in release 5 and is the first thing cut if time is short. This replaces "Gmail only" as the MVP intake; see open item 22.
+- Model: Azure OpenAI on the owner's personal subscription: `gpt-5.4-nano`, `gpt-5.4`, `text-embedding-3-large`. See [AZURE-SETUP.md](AZURE-SETUP.md).
+- Memory: LlamaIndex collections in pgvector. See [REPO-MEMORY.md](REPO-MEMORY.md).
+- Agents run as LangGraph sub-graphs in one process. Splitting them into A2A services is phase 2.
+- A per-issue token cap protects against runaway loops.
+- Forks are allowed. Licence: MIT.
 
 ## Roadmap
 
 ```mermaid
 gantt
-  title Issue-to-PR roadmap (full-time assumption; adjust to available hours)
+  title Phase 1 releases (full-time assumption; adjust to available hours)
   dateFormat YYYY-MM-DD
-  section Build
-  Phase 0 Set up                        :p0, 2026-11-02, 7d
-  Phase 1 Trust layer and intake        :p1, after p0, 14d
-  Phase 2 Fix loop                      :p2, after p1, 14d
-  Phase 3 Summary and memory            :p3, after p2, 7d
-  Phase 4 Setup, verification, demo     :p4, after p3, 7d
-  section Gates
-  Trust tests pass                      :milestone, m1, after p1, 0d
-  Ten seeded bugs produce draft PRs     :milestone, m2, after p2, 0d
-  Demo rehearsal passes                 :milestone, m3, after p4, 0d
+  section Releases
+  R0 Foundations                     :r0, 2026-11-02, 7d
+  R1 Label to draft PR               :r1, after r0, 14d
+  R2 Trust, critic, summary          :r2, after r1, 7d
+  R3 Memory and routing              :r3, after r2, 7d
+  R4 Evaluation and SLOs             :r4, after r3, 7d
+  R5 Demo polish                     :r5, after r4, 7d
+  section Demo checkpoints
+  One seeded bug fixed end to end    :milestone, m1, after r1, 0d
+  Refusals and approvals shown       :milestone, m2, after r2, 0d
+  SLO report ready                   :milestone, m3, after r4, 0d
+  Final demo rehearsed               :milestone, m4, after r5, 0d
 ```
 
-The chart assumes full-time work for seven weeks. If the available hours are fewer, the dates move out in proportion, and the cut list applies sooner.
+Seven weeks at full time. With fewer hours, the dates stretch and the cut list applies sooner.
 
-## Phases
+## Releases
 
-### Phase 0: Set up (week 1)
+| Release | Weeks | What works at the end | Demo you can give | Rubric areas shown |
+|---|---|---|---|---|
+| R0 Foundations | 1 | Docker Compose (Postgres with pgvector, Langfuse), Azure smoke tests, FastAPI `/health`, fork with 10 seeded bugs | One model call traced in Langfuse; the seeded-bug list | Backend, observability |
+| R1 Label to draft PR | 2–3 | Label → webhook → classify → research → failing test → patch → `/approve` comment → draft PR | Scene 5: one seeded bug fixed end to end | Architecture, tools, multi-agent, retrieval (basic) |
+| R2 Trust, critic, summary | 4 | Refusal paths, audit log, critic and confidence, escalation, cited summary with approval | Scenes 4, 6, 7, 8: refusals, "won't answer", human gates | Human-in-the-loop, guardrails |
+| R3 Memory and routing | 5 | Refresh on merge and `/agent reindex`, `fixes` collection, SQL tables, RAG/SQL/hybrid router | Merge a PR and watch memory update; one RAG, one SQL and one hybrid question | Retrieval and data (20%) |
+| R4 Evaluation and SLOs | 6 | 50 golden queries, 10 seeded bugs run, red-team set, small-to-strong model escalation, SLO report | SLO dashboard with every target met or explained | SLO and evaluation |
+| R5 Demo polish | 7 | React UI (runs, approvals, repos), Langflow intake and Slack approval flow, guide, rehearsal | The full 5-minute demo in [DEMO.md](DEMO.md) | Documentation and defence |
 
-- Choose the reference repository. Criteria: one the team controls, a test suite under ten minutes, and clear contribution rules.
-- Build the code graph for it and keep the report.
-- Memory store decided: LlamaIndex `fixes` and `conventions` collections in pgvector (see [REPO-MEMORY.md](REPO-MEMORY.md)).
-- Azure OpenAI deployments created on 28 Oct 2026: `gpt-5.4-nano`, `gpt-5.4`, and `text-embedding-3-large`, on the owner's personal subscription. Run the week-1 checks in [AZURE-SETUP.md](AZURE-SETUP.md).
-- Create the GitHub App and the Gmail OAuth client for the reference deployment.
+### R0: Foundations (week 1)
 
-**Exit:** reference repository chosen; code graph report saved; memory store chosen; model deployments and credentials in place.
+- Fork the reference repository (see below) and seed 10 Python bugs, each with a failing test and a known fixing file.
+- `docker-compose.yml`: PostgreSQL with pgvector, Langfuse, the API.
+- Azure checks from [AZURE-SETUP.md](AZURE-SETUP.md): smoke tests, supported parameters, quota.
+- FastAPI skeleton, Pydantic settings, `.env.example`, pytest running in CI.
+- Create the GitHub App for the fork.
 
-### Phase 1: Trust layer and intake (weeks 2–3)
+**Demo:** a traced model call in Langfuse, and the seeded bugs listed with their failing tests.
 
-- Webhook receiver for GitHub: signature check, duplicate deliveries ignored, label trigger limited to listed maintainers, author allow-list.
-- Gmail intake: read labelled messages, check SPF and DKIM against the sender's domain, drop unauthenticated and automated mail.
-- Allow-list file per deployment, with one list for each channel.
-- Generic "not permitted" reply, limited to one per sender per day.
-- Audit log of every decision, with no message bodies.
-- Intake extraction: title, steps, expected, and actual. Ask the reporter for missing fields rather than guessing.
+### R1: Label to draft PR (weeks 2–3)
 
-**Exit:** on seeded test emails and events, every non-trusted path is refused or ignored, and every trusted path reaches the next stage. Each outcome appears in the audit log.
+- Webhook receiver: signature check, duplicate deliveries ignored, label accepted only from listed maintainers.
+- LangGraph graph with checkpoints in Postgres: classify (nano) → research → reproduce → patch (two attempts) → approval → draft PR.
+- Research: full LlamaIndex index of the fork (`code` and `docs`), hybrid search filtered by repository.
+- Sandbox: Docker with no network and no secrets; runs `pytest`.
+- Approval for R1: a maintainer comments `/approve` on the issue. `interrupt()` pauses the graph until then.
+- Langfuse trace for every run.
 
-### Phase 2: Fix loop (weeks 4–5)
+**Demo:** scene 5. A maintainer labels a seeded bug, the agent writes a failing test, patches it, waits for `/approve`, and opens a draft PR on `agent/issue-<n>`.
 
-- Research agent: memory lookup, code-graph neighbourhood, and retrieval over code and docs.
-- Reproduction agent: writes a failing test, runs it in the sandbox, and reports reproduced, not reproduced, or could not run.
-- Patch agent: edits a branch named `agent/issue-<number>`, with a two-attempt limit.
-- Sandbox: no network, no secrets, read-only mounts except the working copy, time and memory limits.
-- Approval queue: a maintainer approves each push and each draft PR.
+### R2: Trust, critic, and summary (week 4)
 
-**Exit:** ten seeded bugs from allow-listed reporters produce draft PRs that pass the new test and keep the other tests passing. Unreproducible bugs produce a comment asking for detail, not a patch.
+- Refusals: non-maintainer label, unknown author, instructions inside the issue body. Each is logged, with no work started.
+- Append-only audit log.
+- Critic node: tests pass, every claim cited, confidence score. Low confidence or an exhausted budget escalates to the maintainer with full context.
+- "Not reproduced" path: a comment asking for specific detail, no patch.
+- Summary agent: five-part root-cause summary with citations, behind its own approval.
 
-### Phase 3: Summary and memory (week 6)
+**Demo:** scenes 4, 6, 7 and 8, showing when the agent refuses or chooses not to answer.
 
-- Summary agent: five-part summary with a citation on every claim. Uncited claims are removed.
-- Approval for the summary before it goes to the reporter or the issue.
-- Memory writes after merge: `bug_fix` and `root_cause` records, with provenance.
+### R3: Memory and routing (week 5)
 
-**Exit:** summaries reach the reporter and the issue only after approval, and no uncited claim survives in the test set.
+- Repo profiler (Python only in phase 1, with Java and C# detected and reported as "phase 2").
+- Incremental refresh on PR merge and on `/agent reindex`; `index_state` and `index_runs` tables.
+- `fixes` collection written when an agent PR is merged and its summary approved.
+- SQL tool (read-only role) over runs, issues, costs and index tables.
+- Router: RAG, SQL, or hybrid, with the route recorded in the trace.
 
-### Phase 4: Setup, evaluation, and demo (week 7)
+**Demo:** merge the R1 PR and show the `index_runs` row; then ask "where is the date parsing code?" (RAG), "how many fixes merged this week and what did they cost?" (SQL), and "have we fixed a bug like this before?" (hybrid).
 
-- Self-hosting guide: deploy with Docker Compose, set the allow-list, set keys, connect GitHub and Gmail.
-- Evaluation run, following [VERIFICATION.md](VERIFICATION.md).
-- Three-minute demo, and a short written report that includes the targets not met.
+### R4: Evaluation and SLOs (week 6)
 
-**Exit:** a new user can set up a fork from the guide in under 30 minutes, and the evaluation report is published.
+- 50 golden queries labelled with type, risk, retrieval mode and expected escalation (15 RAG, 10 SQL, 10 hybrid, 10 high-risk, 5 escalation).
+- Run the 10 seeded bugs end to end, three times each, for pass^k.
+- Red-team set: injection in issue text, forged events, attempts to push outside `agent/*`.
+- Small-to-strong model escalation; measure cost and latency both ways.
+- SLO report following [VERIFICATION.md](VERIFICATION.md).
+
+**Demo:** the SLO dashboard, the routing confusion matrix, and the cost per issue.
+
+### R5: Demo polish (week 7)
+
+- React (Vite, TypeScript) UI with three screens: runs, approvals, repos and memory.
+- Langflow intake flow (Jira or Gmail, decided by open item 22) calling `POST /runs`, and a Langflow Slack flow for approvals.
+- Self-hosting guide; demo rehearsal twice in a row; recorded backup of every scene.
+
+**Demo:** the full 5-minute demo.
+
+## Phase 2 (after the capstone)
+
+- Java and C# repositories through the repo profiler: splitter, test command, sandbox image.
+- Other code hosts and trackers through the adapters in [INTEGRATIONS.md](INTEGRATIONS.md): GitLab, Bitbucket, CodeCommit, Jira, Zoho.
+- Agents split into A2A services.
+- Feature requests with spec approval, and the VS Code extension. See [FUTURE-SCOPE.md](FUTURE-SCOPE.md).
 
 ## Cut list
 
-If the schedule slips, cut in this order. Everything after the first item is a real loss, so cut the earlier items first.
+Cut from the top. Each release still stands on its own.
 
-1. Graphify incremental updates: re-run the full graph after each merge instead.
-2. Small-to-strong model escalation: run every node on `gpt-5.4` if the escalation logic isn't ready, and accept the higher cost.
-3. Richer memory: keep only the `fixes` collection and skip `conventions`.
-4. Summary formatting polish: keep the five parts; drop extra styling.
+1. Langflow intake and Slack flow (R5): keep GitHub labels and `/approve` comments.
+2. React UI (R5): demo through GitHub, the API, and Langfuse.
+3. Graphify code graph: rely on hybrid search alone.
+4. Small-to-strong model escalation (R4): run every node on `gpt-5.4` and accept the cost.
+5. `conventions` collection (R3): keep only `fixes`.
 
 Do not cut:
-- allow-list checks and signature checks
-- sender authentication for email
+- signature checks and the maintainer and author allow-lists
 - the approval gates for pushes, PRs, and summaries
-- the citation check
-- the security tests
+- the citation check and the critic
+- the RAG, SQL, and hybrid router (20% of the marks)
+- the golden set and the security tests
 
-These are what make the system safe to show, and they are the reason for the project.
-
-## Milestones
-
-| Week | Milestone | Done when |
-|---|---|---|
-| 1 | Setup complete | Reference repo, code graph, memory store, model deployments, and credentials all in place |
-| 2–3 | Trust and intake | Seeded emails and events behave as specified; audit log complete |
-| 4–5 | Fix loop | Ten seeded bugs produce draft PRs; unreproducible bugs are handled |
-| 6 | Summary and memory | Summaries need approval; memory records written on merge |
-| 7 | Evaluation and demo | Report, guide, and demo complete |
+These are what make the system safe to show, and they carry most of the marks.
 
 ## Risks
 
 | Risk | Likelihood | Impact | Response |
 |---|---|---|---|
-| Scope exceeds seven weeks | High | High | Cut list above; MVP is GitHub and Gmail only |
-| Gmail OAuth set-up takes longer than expected | Medium | Medium | Start the OAuth client in week 1; document the steps |
-| Forwarded mail fails SPF | Medium | Low | Such mail is dropped, not trusted; this is documented behaviour |
+| Scope exceeds seven weeks | High | High | Releases are demoable on their own; cut list above; phase 1 is Python and GitHub only |
+| Langflow or Gmail set-up takes longer than expected | Medium | Low | It's in R5 and first on the cut list; GitHub labels cover intake |
 | Model quality varies between deployments | Medium | Medium | Compare on the seeded set in week 1 and keep the better one |
 | Patches pass tests but are wrong | High | High | Human approval; acceptance metric; test coverage stated in each summary |
 | Prompt injection in a report | Medium | High | Report text treated as data; tool allow-list; security tests |
@@ -124,10 +151,10 @@ These are what make the system safe to show, and they are the reason for the pro
 | Cost overrun | Medium | Medium | Per-issue budget; two-attempt limit; measured baseline in week 2 |
 | Rate limits on the model deployment | Medium | Low | Retry with backoff; surface the limit to the maintainer |
 
-## Definition of done (MVP)
+## Definition of done (phase 1)
 
-- The GitHub path works end to end on seeded bugs, with the allow-list enforced.
-- Gmail intake works end to end, with sender checks, the allow-list, and the generic reply.
+- The GitHub path works end to end on seeded Python bugs, with the allow-lists enforced.
+- The router answers RAG, SQL, and hybrid questions, and memory refreshes on merge.
 - Every write action needs an approval, and the security tests pass.
 - Summaries have citations, and none reaches a reporter without approval.
 - The evaluation report exists, with targets met or explained.

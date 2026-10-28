@@ -9,7 +9,7 @@ This repository holds the **idea, use cases, plan, and verification approach** o
 
 ## What it does (MVP)
 
-1. A bug report arrives by **Gmail** from a sender on an allow-list, or as a **GitHub** issue from an allow-listed author.
+1. A bug report arrives as a **GitHub** issue from an allow-listed author. (Gmail or Jira intake through Langflow is an optional extra in release R5.)
 2. A listed maintainer adds the `agent-fix` label.
 3. The agent finds the relevant code using memory of past fixes, a code graph, and search.
 4. It reproduces the bug with a failing test in a sandbox.
@@ -45,14 +45,15 @@ The agent talks to three ports, and each organisation picks its adapters in one 
 | Port | Adapters |
 |---|---|
 | Code host | GitHub (MVP), GitLab, Bitbucket, AWS CodeCommit, Azure DevOps |
-| Tracker | Gmail and GitHub Issues (MVP), Jira, Zoho, Asana |
+| Tracker | GitHub Issues (phase 1), Jira or Gmail via Langflow (R5, optional), Zoho, Asana |
 | Chat for approvals | Slack, Zoho Cliq, Microsoft Teams |
 
 ## Scope at a glance
 
 | Area | MVP | Future |
 |---|---|---|
-| Intake channel | Gmail | Jira, Zoho |
+| Intake channel | GitHub label (phase 1); Langflow intake from Jira or Gmail (R5, optional) | Zoho, Asana |
+| Languages | Python | Java, C# (repo profiler already designed) |
 | Repository provider | GitHub | GitLab, Bitbucket, AWS CodeCommit, Azure DevOps |
 | Model | Azure OpenAI: `gpt-5.4-nano` for routing and extraction, `gpt-5.4` for tests, patches, and summaries, `text-embedding-3-large` for search (user's own key) | Other providers behind the same setting |
 | Work type | Bug reports | Feature requests (with spec approval) |
